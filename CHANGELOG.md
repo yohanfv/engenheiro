@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.1.0
+
+- Race start: the engineer stays quiet while you wait on the grid, while the lights come on and for 20 seconds
+  after lights out (only "lights out" and urgent calls get through). What he had to say comes after that, updated
+  ("Start done, P3...").
+- With the formation lap on, he does the briefing and the radio check during the formation lap and goes quiet when
+  you line up on the grid. Without the formation lap there is no radio check on the grid.
+- New option in Settings: "Quiet at the start" (on by default).
+- Demo race: a short formation phase, the five start lights and lights out.
+
+## 1.0.4
+
+- Fixed: after a Safety Car, the engineer could say that several drivers "lost 20 seconds" and "may have a problem"
+  (the slow lap was the Safety Car lap). Laps run partly under the Safety Car or VSC are now ignored.
+- Demo race: the cars wait on the grid while the engineer does the opening radio, so the calls match what you see.
+- Clearer answer when you ask about tyres right after a stop.
+
 ## 1.0.3
 
 - A "☕ Support" button at the top of the dashboard and a short note on the waiting screen, linking to Ko-fi.

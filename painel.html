@@ -499,6 +499,7 @@ async function abrirConfig() {
       ${campo("porta", T("Porta UDP (a mesma do PS5)", "UDP port (same as in the game)"), c.porta, "num")}
       ${campo("porta_painel", T("Porta do painel", "Dashboard port"), c.porta_painel, "num")}
       ${campo("abrir_painel_automaticamente", T("Abrir o painel ao iniciar", "Open the dashboard on start"), c.abrir_painel_automaticamente, "bool")}
+      ${campo("silencio_na_largada", T("Silêncio na largada (no grid e até 20 s depois das luzes, só o essencial)", "Quiet at the start (on the grid and until 20 s after lights out, only what matters)"), c.silencio_na_largada !== false, "bool")}
       ${campo("verificar_atualizacoes", T("Avisar quando houver versão nova (consulta o GitHub ao abrir)", "Tell me when a new version is out (checks GitHub on start)"), c.verificar_atualizacoes !== false, "bool")}
       ${campo("painel_no_celular", T("Permitir abrir o painel no celular (outros aparelhos da rede)", "Allow opening the dashboard on your phone (other devices on the network)"), c.painel_no_celular !== false, "bool")}
     </fieldset>

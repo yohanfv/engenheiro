@@ -168,6 +168,7 @@ PADRAO_CONFIG = {
     "porta_painel": 8080,
     "painel_no_celular": True,          # False: o painel só abre neste computador
     "verificar_atualizacoes": True,     # procura versão nova no GitHub ao abrir
+    "silencio_na_largada": True,        # no grid e até 20 s depois das luzes, só o essencial
     "abrir_painel_automaticamente": True,
     "velocidade_voz": 1,
     "volume_voz": 100,
@@ -234,7 +235,7 @@ def tempo_txt(ms):
 
 PALAVRAS_COMUNS = {"volta", "dano", "pneus", "pneu", "box", "safety", "atenção", "chuva", "perdemos", "perdeu",
                    "ganhou", "faltam", "última", "defenda", "combustível", "penalidade", "advertência",
-                   "previsão", "começou", "a", "o", "os", "as", "agora", "janela", "estratégia", "parada",
+                   "previsão", "começou", "luzes", "largada", "lights", "start", "a", "o", "os", "as", "agora", "janela", "estratégia", "parada",
                    "bandeira", "pista", "setor", "você", "isso", "boa", "bela", "manobra", "vitória", "que",
                    # inglês
                    "lap", "tyres", "careful", "rain", "we", "lost", "gained", "last", "defend", "fuel", "penalty",
@@ -434,6 +435,14 @@ class Radio:
             heapq.heappush(self._fila, (-prioridade, next(self._seq), agora, item))
             self._cond.notify()
         return True
+
+    def descartar_fila(self, max_prio=1):
+        """Tira da fila as mensagens que ainda não foram faladas, até essa prioridade (ex.: na hora da largada)."""
+        with self._cond:
+            antes = len(self._fila)
+            self._fila = [x for x in self._fila if -x[0] > max_prio]
+            heapq.heapify(self._fila)
+            return antes - len(self._fila)
 
     def esta_falando(self):
         with self._cond:
@@ -791,6 +800,12 @@ class Sessao:
         self.posicao = 0
         self.posicao_largada = 0
         self.posicao_final = 0
+        # largada: silêncio no grid e logo depois das luzes; o que for dito nessa hora fica para depois
+        self.lgot_t = None              # instante das luzes apagadas
+        self.luzes_largada = False      # sequência das luzes começou (STLG)
+        self.formacao_cfg = 0           # o jogo está com volta de apresentação? (0 = não, 1 = sim)
+        self.falas_adiadas = []         # [(texto, prioridade, chave, intervalo)]
+        self._pedir_teste_formacao = False
         self.stint_inicio_volta = 1
         self.stint_desgaste_voltas = []   # desgaste máx. ao fim de cada volta do stint
         self.alertas_desgaste_feitos = set()
@@ -893,7 +908,48 @@ class Sessao:
         n = self.carros[idx].nome
         return "" if n.startswith("Carro ") or n.lower() in ("player", "jogador", "") else n
 
+    SILENCIO_POS_LARGADA = 20.0      # segundos depois das luzes apagadas sem conversa (só o urgente)
+
+    def _corrida_ja_comecou(self):
+        eu = self.eu if self.carros else None
+        if eu is None:
+            return False
+        if (eu.volta or 0) >= 2:
+            return True
+        # no meio da 1ª volta, andando rápido, sem volta de apresentação (o app abriu depois das luzes)
+        comp = self.comprimento_pista or 0
+        dist = getattr(self, "_dist", 0) or 0
+        return ((eu.vel or 0) > 80 and self.safety_car == 0 and not self.luzes_largada
+                and comp > 0 and 0.25 * comp < dist < 0.9 * comp)
+
+    def segurando_falas(self):
+        """True na hora da largada: parado no grid (sem volta de apresentação), luzes acendendo e logo depois."""
+        if not self.eh_corrida or not self.cfg.get("silencio_na_largada", True):
+            return False
+        if self.lgot_t is None and self._corrida_ja_comecou():
+            self.lgot_t = time.monotonic() - 999      # o app abriu com a corrida em andamento
+        if self.lgot_t is not None:
+            return time.monotonic() - self.lgot_t < self.SILENCIO_POS_LARGADA
+        return not (self.safety_car == 3 and not self.luzes_largada)   # na volta de apresentação pode falar
+
+    def _liberar_adiadas(self):
+        lista, self.falas_adiadas = self.falas_adiadas, []
+        depois = self.lgot_t is not None
+        for texto, prio, chave, intervalo in lista:
+            if depois and chave in ("inicio", "lembrar-acerto"):
+                continue                              # "corrida em Mônaco, céu limpo" e o acerto antigo já não fazem sentido
+            if depois and chave == "largada-msg":
+                texto = falas.depois_da_largada(self.posicao_largada, self.posicao, self.pista)
+            self.falar(texto, prio, chave, intervalo)
+
     def falar(self, texto, prioridade=1, *a, **k):
+        chave = a[0] if a else k.get("chave")
+        if prioridade < 3 and chave != "lgot" and self.segurando_falas():
+            intervalo = a[1] if len(a) > 1 else k.get("intervalo", 0.0)
+            self.falas_adiadas = [f for f in self.falas_adiadas if not (chave and f[2] == chave)]
+            self.falas_adiadas.append((texto, prioridade, chave, intervalo))
+            print(f"{datetime.now():%H:%M:%S} [RÁDIO - depois da largada] {texto}", flush=True)
+            return None
         ok = self.radio.falar(texto, prioridade, *a, **k)
         if ok is not False:
             try:
@@ -983,6 +1039,13 @@ class Sessao:
         self.duracao = iv(p.m_sessionDuration)
         sc_antes = self.safety_car
         self.safety_car = iv(p.m_safetyCarStatus)
+        self.formacao_cfg = iv(getattr(p, "m_formationLap", 0))
+        if self.eh_corrida and self.lgot_t is None:
+            if self.safety_car == 3 and self._pedir_teste_formacao and not self.luzes_largada:
+                self._pedir_teste_formacao = False      # volta de apresentação: boa hora para o teste de rádio
+                self.radio.pedir_teste_de_radio()
+            if sc_antes == 3 and self.safety_car == 0:
+                self.radio.descartar_fila(1)            # fim da volta de apresentação: alinhando no grid, silêncio
         self.pit_ideal = iv(getattr(p, "m_pitStopWindowIdealLap", 0))
         self.pit_limite = iv(getattr(p, "m_pitStopWindowLatestLap", 0))
         self.rejoin = iv(getattr(p, "m_pitStopRejoinPosition", 0))
@@ -1016,7 +1079,11 @@ class Sessao:
                 txt += tr(f" Dica para esta pista: {falas.dica(self.pista)}.", f" Tip for this track: {falas.dica(self.pista)}.")
             self.falar(txt, 1, "inicio")
             if self.eh_corrida and self.cfg.get("microfone", True):
-                self.radio.pedir_teste_de_radio()
+                if self.safety_car == 3:
+                    self.radio.pedir_teste_de_radio()
+                elif self.formacao_cfg or not self.cfg.get("silencio_na_largada", True):
+                    self._pedir_teste_formacao = True   # pede quando a volta de apresentação começar
+                # sem volta de apresentação: no grid é hora de concentração, sem teste de rádio
             return
 
         if self.av["clima"]:
@@ -1307,6 +1374,8 @@ class Sessao:
         eu = self.eu
         self._dist = float(ld.m_lapDistance)
         self.tempo_volta_atual = iv(ld.m_currentLapTimeInMS)
+        if self.falas_adiadas and not self.segurando_falas():
+            self._liberar_adiadas()
         self._setor = iv(ld.m_sector)
         self._atualizar_delta()
         if self.eh_corrida and self.av.get("pits_dos_rivais", True):
@@ -1353,8 +1422,15 @@ class Sessao:
             if self.jogador in (a, b):
                 agora = time.monotonic()
                 self.ultrapassagens = [u for u in self.ultrapassagens if agora - u[0] < 30] + [(agora, a, b)]
+        if cod == "STLG" and self.eh_corrida and self.lgot_t is None:
+            if not self.luzes_largada:
+                self.radio.descartar_fila(1)            # as luzes vão acender: silêncio
+            self.luzes_largada = True
         if cod == "LGOT":
             self._t_luzes = time.monotonic()
+            if self.eh_corrida and self.lgot_t is None:
+                self.lgot_t = self._t_luzes
+                self.radio.descartar_fila(1)
         if cod == "RTMT" and det is not None:
             motivo = getattr(det, "m_reason", 0)
             self.vigia.abandono(iv(getattr(det, "vehicleIdx", -1)), iv(getattr(motivo, "value", motivo)))
@@ -1819,7 +1895,10 @@ class Sessao:
                              f"The game's strategy: pit on lap {self.pit_ideal}."))
         if self.safety_car in (1, 2):
             partes.append(tr("Com Safety Car, a parada sai barata.", "Under the Safety Car, a stop is cheap."))
-        if not partes or (len(partes) == 1 and self.safety_car in (1, 2)):
+        if (not partes or (len(partes) == 1 and self.safety_car in (1, 2))) and c.idade_pneu <= 0 and desg < 2:
+            partes.insert(0, tr("Pneus novos, acabaram de ser colocados. Preciso de umas duas voltas com eles para projetar o desgaste.",
+                                "Fresh tyres, just fitted. I need a couple of laps on this set to project the wear."))
+        elif not partes or (len(partes) == 1 and self.safety_car in (1, 2)):
             partes.insert(0, tr(f"Pneus com {desg:.0f} por cento de desgaste e {c.idade_pneu} voltas. "
                                 f"Ainda não tenho voltas suficientes deste jogo de pneus para projetar o desgaste.",
                                 f"Tyres at {desg:.0f} percent wear after {c.idade_pneu} laps. "
@@ -3106,6 +3185,7 @@ class Engenheiro:
         "voz_neural_en": str, "voz_velocidade_neural": str, "voz_efeito_radio": bool, "voz_no_notebook": bool, "microfone": bool,
         "microfone_palavra_ativacao": str, "microfone_frases": str, "porta": int, "porta_painel": int,
         "abrir_painel_automaticamente": bool, "painel_no_celular": bool, "verificar_atualizacoes": bool,
+        "silencio_na_largada": bool,
     }
     PRECISA_REINICIAR = {"painel_no_celular", "idioma", "voz_ativada", "microfone", "microfone_palavra_ativacao", "microfone_frases", "porta",
                          "porta_painel"}

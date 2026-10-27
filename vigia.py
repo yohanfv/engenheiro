@@ -46,6 +46,7 @@ class Vigia:
         self.correu = set()                     # carros vistos correndo (para não "abandonar" quem nem largou)
         self.pendente = {}                      # idx -> instante em que o status virou abandono (espera o RTMT)
         self.lento_desde = {}
+        self._ult_sc = -1e9                     # último instante (relógio do jogo) com Safety Car ou VSC na pista
         self.lento_avisado = set()
         self.voltas = {}                        # idx -> [(ms, s1, s2, s3)] voltas limpas
         self.stints = {}                        # idx -> {"chave": (paradas, comp), "comp", "pontos": [(volta, desg)]}
@@ -213,6 +214,8 @@ class Vigia:
         if 0 <= agora - self._ult_tick < 0.4:
             return
         self._ult_tick = agora
+        if s.safety_car in (1, 2):
+            self._ult_sc = agora
         andando = self._corrida_andando()
         for c in s.carros:
             if c.idx == s.jogador or not c.posicao:
@@ -266,7 +269,9 @@ class Vigia:
         if not c.teve_pit and c.desgaste:
             st["pontos"].append((volta, max(c.desgaste)))
         # volta mais lenta que o normal
-        limpa = (not c.teve_pit and c.ultima_valida and s.safety_car == 0 and volta > 1 and s1 and s2 and s3 > 0
+        agora = float(getattr(s, "tempo_sessao", 0) or 0)
+        teve_sc = s.safety_car in (1, 2) or (agora and agora - ms / 1000 - 3 <= self._ult_sc)   # SC/VSC em parte da volta
+        limpa = (not c.teve_pit and c.ultima_valida and not teve_sc and volta > 1 and s1 and s2 and s3 > 0
                  and s.clima < 3)
         if not limpa:
             return

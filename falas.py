@@ -190,6 +190,14 @@ def largada(pos, pista, total):
     return txt
 
 
+def depois_da_largada(grid, pos, pista):
+    """Dito uns segundos depois da largada, no lugar do "largando de P5" (quando não houve volta de apresentação).
+    O ganho de posições fica para o fim da primeira volta."""
+    if en():
+        return (f"Start done, P{pos}. " if pos else "Start done. ") + f"The best place to overtake here is {ultrapassagem(pista)}."
+    return (f"Largada feita, P{pos}. " if pos else "Largada feita. ") + f"A melhor chance de ultrapassar aqui é {ultrapassagem(pista)}."
+
+
 def fim_corrida(pos, largada_pos, sprint, volta_rapida):
     """sprint=None quando não dá para saber se foi sprint (aí não fala de pontos)."""
     pts_tab = PONTOS_SPRINT if sprint else PONTOS_GP

@@ -66,6 +66,8 @@ FORMATO = arg("--formato", 2026)
 VELOC = arg("--velocidade", 10.0)
 INCIDENTES = "--incidentes" in sys.argv     # corrida com abandono, toque, asa quebrada e volta lenta (sem SC/chuva)
 DEMO = False                                # demonstração dentro do app: incidentes + Safety Car + chuva
+GRID = "--largada" in sys.argv              # espera no grid, luzes acendendo e luzes apagadas (LGOT)
+FORMACAO = "--formacao" in sys.argv         # com volta de apresentação antes do grid
 PARAR_DEMO = None
 CENARIO = "classificacao" if "classificacao" in sys.argv else ("treino" if "treino" in sys.argv else "corrida")
 UID = random.getrandbits(63)
@@ -209,6 +211,8 @@ def rodar():
                 print(f"  carro lento: {PILOTOS[rodar.lento.i]} na volta {rodar.lento_volta}", flush=True)
         if corrida and (not INCIDENTES or DEMO):
             sc = 1 if (3.2 <= eu.dist / comp <= 3.9) else 0
+        if corrida and GRID and FORMACAO and t < ESPERA_GRID - 12:
+            sc = 3                       # demonstração: o tempo no grid faz o papel da volta de apresentação
             if 3.85 <= eu.dist / comp <= 3.9 and not getattr(rodar, "sc_ev", False):
                 rodar.sc_ev = True
                 evento(t, "SCAR", struct.pack("<BB", 1, 1))
@@ -219,8 +223,16 @@ def rodar():
             if eu.dist / comp >= 4.5:
                 pen = 5
         # ---- movimento ----
+        # demonstração: os carros esperam no grid uns segundos, para o rádio de abertura terminar antes da largada
+        no_grid = corrida and GRID and t < ESPERA_GRID
+        if no_grid and t >= ESPERA_GRID - 9 and int((t - (ESPERA_GRID - 9)) / 1.5) >= getattr(rodar, "luz", 0) < 5:
+            rodar.luz = getattr(rodar, "luz", 0) + 1     # as cinco luzes acendendo
+            evento(t, "STLG", struct.pack("<B", rodar.luz))
+        if corrida and GRID and not no_grid and not getattr(rodar, "luzes", False):
+            rodar.luzes = True
+            evento(t, "LGOT")
         for c in carros:
-            if c.resultado == 3:
+            if c.resultado == 3 or no_grid:
                 continue
             ritmo = c.base + 0.08 * c.desg
             if c.resultado == 7:
@@ -324,7 +336,7 @@ def rodar():
         for c in carros:
             fr = (max(c.dist, 0) % comp) / comp + (c.volta % 3) * 0.003
             curva = abs(((fr * 7) % 1) - 0.5) < 0.12
-            vel = 120 if curva else 270
+            vel = 0 if no_grid else (120 if curva else 270)
             if c.parando:
                 vel = max(0, int(270 - (t - c.parando) * 60))
             tels.append(CarTelemetryData.from_values(
@@ -396,12 +408,15 @@ def rodar():
     print("Simulação terminada.")
 
 
+ESPERA_GRID = 66.0     # segundos simulados no grid (demonstração de corrida: ~22 s reais, como volta de apresentação)
+
+
 def preparar_demo(cenario, porta, nome_piloto, parar):
     """Prepara a demonstração que o app roda sozinho (sem o jogo). Devolve o id da sessão simulada."""
-    global CENARIO, VELOC, INCIDENTES, DEMO, PARAR_DEMO, DESTINO, UID
+    global CENARIO, VELOC, INCIDENTES, DEMO, PARAR_DEMO, DESTINO, UID, GRID, FORMACAO
     CENARIO = cenario if cenario in ("corrida", "classificacao", "treino") else "corrida"
     VELOC = 3.0 if CENARIO == "corrida" else 6.0
-    INCIDENTES = DEMO = True
+    INCIDENTES = DEMO = GRID = FORMACAO = True
     PARAR_DEMO = parar
     DESTINO = ("127.0.0.1", int(porta))
     UID = random.getrandbits(63) or 1
