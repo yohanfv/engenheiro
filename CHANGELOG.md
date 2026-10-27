@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.1
+
+- Race start: if the game counts the formation lap as "lap 1", the engineer now ignores it. Before, he could say
+  "end of lap one" on the grid, call every car on the grid a "slow car" and count one lap too many.
+- If the lights-out signal is lost, the engineer still notices the race has started.
+- The app writes the lap numbers around the start to engenheiro.log (lines starting with [LARGADA]), to help with bug reports.
+
 ## 1.1.0
 
 - Race start: the engineer stays quiet while you wait on the grid, while the lights come on and for 20 seconds
