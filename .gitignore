@@ -1,0 +1,19 @@
+# dados do usuario / user data
+config.json
+sessoes/
+historico_*.json
+engenheiro.log*
+dados_janela/
+cache_voz/
+modelos/
+mapas/marcas_*.json
+# build
+_internal/
+*.exe
+build/
+dist/
+.construcao/
+*.spec
+__pycache__/
+*.pyc
+.venv/
