@@ -1,0 +1,44 @@
+# Builds Engenheiro.exe on Windows and publishes the zip on the Releases page.
+# Run it from the Actions tab ("Build release" > "Run workflow") after changing VERSAO in versao.py
+# and adding the new version to CHANGELOG.md. Pushing a tag like v1.0.1 also runs it.
+name: Build release
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install libraries
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt pyinstaller
+
+      - name: Build Engenheiro.exe and the release zip
+        run: python scripts/construir.py --pacote
+
+      - name: Publish on the Releases page
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VER=$(python -c "import versao; print(versao.VERSAO)")
+          ZIP="dist/Engenheiro-$VER-windows.zip"
+          python scripts/notas_versao.py "$VER" > notas.md
+          if gh release view "v$VER" > /dev/null 2>&1; then
+            gh release upload "v$VER" "$ZIP" --clobber
+          else
+            gh release create "v$VER" "$ZIP" --title "Engenheiro $VER" --notes-file notas.md --target "$GITHUB_SHA"
+          fi
