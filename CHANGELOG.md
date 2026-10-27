@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.2
+
+- Support link: the About screen and the README now have a link to leave an optional tip on Ko-fi.
+  The app stays free; nothing is locked.
+
 ## 1.0.1
 
 - Fixed: in the downloaded version, the demo drew the cars off the track (it could not find the track maps).

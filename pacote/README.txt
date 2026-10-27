@@ -121,6 +121,11 @@ Troubleshooting
   engenheiro.log from the app folder.
 
 
+Support
+-------
+The app is free and always will be. If you want to say thanks: ko-fi.com/yohanfv
+
+
 Credits and license
 -------------------
 Created by Yohan Vieira. Built with the help of Claude (Anthropic).

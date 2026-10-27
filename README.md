@@ -7,7 +7,8 @@
   <a href="https://github.com/yohanfv/engenheiro/releases/latest"><b>Download</b></a> ·
   <a href="README.pt-BR.md">Português</a> ·
   <a href="CHANGELOG.md">Changelog</a> ·
-  <a href="https://github.com/yohanfv/engenheiro/issues">Report a problem</a>
+  <a href="https://github.com/yohanfv/engenheiro/issues">Report a problem</a> ·
+  <a href="https://ko-fi.com/yohanfv">Support ☕</a>
 </p>
 
 <p align="center"><img src="docs/dashboard.jpg" alt="Engenheiro live dashboard during a race"></p>
@@ -124,6 +125,12 @@ project folder. Releases are built automatically by GitHub Actions (`.github/wor
 | `scripts/` | Build scripts and helpers |
 
 The code and comments are in Portuguese; the app itself is fully bilingual.
+
+## Support the project
+
+Engenheiro is free and always will be: nothing in the app is locked or paid. If it makes your races better and you
+want to say thanks, you can leave a tip on [Ko-fi](https://ko-fi.com/yohanfv). Bug reports, ideas and a ⭐ on this
+repository help just as much.
 
 ## Credits
 

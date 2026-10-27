@@ -120,6 +120,11 @@ Problemas comuns
   engenheiro.log da pasta do programa.
 
 
+Apoie o projeto
+---------------
+O programa é gratuito e vai continuar assim. Se quiser agradecer: ko-fi.com/yohanfv
+
+
 Créditos e licença
 ------------------
 Criado por Yohan Vieira, com a ajuda do Claude (Anthropic).

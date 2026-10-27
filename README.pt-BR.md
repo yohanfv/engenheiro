@@ -7,7 +7,8 @@
   <a href="https://github.com/yohanfv/engenheiro/releases/latest"><b>Baixar</b></a> ·
   <a href="README.md">English</a> ·
   <a href="CHANGELOG.md">Novidades</a> ·
-  <a href="https://github.com/yohanfv/engenheiro/issues">Relatar um problema</a>
+  <a href="https://github.com/yohanfv/engenheiro/issues">Relatar um problema</a> ·
+  <a href="https://ko-fi.com/yohanfv">Apoiar ☕</a>
 </p>
 
 <p align="center"><img src="docs/dashboard.jpg" alt="Painel ao vivo do Engenheiro durante uma corrida"></p>
@@ -95,6 +96,12 @@ GitHub o número da versão mais nova e pode ser desligada nas Configurações.)
 Precisa de Windows e Python 3.12. O jeito mais fácil é dar dois cliques em `scripts\gerar_executavel.bat`: ele
 instala tudo e coloca o `Engenheiro.exe` na pasta do projeto. Os comandos, o build automático e a estrutura das
 pastas estão no [README em inglês](README.md#build-from-source).
+
+## Apoie o projeto
+
+O Engenheiro é gratuito e vai continuar assim: nada no programa é pago ou bloqueado. Se ele melhora suas corridas e
+você quiser agradecer, pode deixar uma contribuição no [Ko-fi](https://ko-fi.com/yohanfv). Relatar problemas, mandar
+ideias e dar uma ⭐ no repositório ajudam do mesmo jeito.
 
 ## Créditos
 

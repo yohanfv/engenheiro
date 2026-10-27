@@ -2,13 +2,13 @@
 """Nome, versão e créditos do app (aparecem na tela "Sobre" e no pacote de versões)."""
 
 NOME = "Engenheiro"
-VERSAO = "1.0.1"
+VERSAO = "1.0.2"
 SUBTITULO = ("engenheiro de corrida por voz para o F1 25 (não oficial)",
              "a free voice race engineer for F1 25 (unofficial)")
 AUTOR = "Yohan Vieira"
 USUARIO_GITHUB = "yohanfv"
 LINK_GITHUB = f"https://github.com/{USUARIO_GITHUB}/engenheiro" if USUARIO_GITHUB else ""
-LINK_DOACAO = ""           # ex.: "https://ko-fi.com/usuario"
+LINK_DOACAO = "https://ko-fi.com/yohanfv"
 AVISO = ("Projeto de fã, não oficial. Sem ligação com a Formula 1, a FIA, a EA ou a Codemasters. "
          "F1 e FORMULA 1 são marcas da Formula One Licensing B.V.",
          "Unofficial fan project. Not affiliated with Formula 1, the FIA, EA or Codemasters. "
