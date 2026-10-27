@@ -537,6 +537,7 @@ class Carro:
         self.idx = idx
         self.nome = f"Carro {idx + 1}"
         self.volta = 0
+        self.desloc_volta = 0     # voltas que o jogo contou antes da largada (apresentação como "volta 1")
         self.s1 = 0
         self.s2 = 0
         self.invalida = False
@@ -804,6 +805,10 @@ class Sessao:
         self.lgot_t = None              # instante das luzes apagadas
         self.luzes_largada = False      # sequência das luzes começou (STLG)
         self.formacao_cfg = 0           # o jogo está com volta de apresentação? (0 = não, 1 = sim)
+        self.viu_formacao = False       # a volta de apresentação passou por aqui (Safety Car status 3 antes das luzes)
+        self.volta_jogo_luzes = None    # número da volta (como o jogo mostra) quando as luzes apagaram
+        self.luzes_tempo_jogo = 0.0     # relógio do jogo quando as luzes apagaram
+        self._volta_jogo_jog = None     # última volta do jogador como o jogo mandou (para o registro)
         self.falas_adiadas = []         # [(texto, prioridade, chave, intervalo)]
         self._pedir_teste_formacao = False
         self.stint_inicio_volta = 1
@@ -909,6 +914,37 @@ class Sessao:
         return "" if n.startswith("Carro ") or n.lower() in ("player", "jogador", "") else n
 
     SILENCIO_POS_LARGADA = 20.0      # segundos depois das luzes apagadas sem conversa (só o urgente)
+    JANELA_VOLTA_LARGADA = 30.0      # segundos depois das luzes em que "virar a volta" só pode ser a apresentação
+
+    def _antes_da_largada(self):
+        """True antes das luzes apagarem (com apresentação ou luzes acendendo) e logo depois delas."""
+        if self.volta_jogo_luzes is not None:     # relógio do jogo: vale também no simulador acelerado
+            return self.tempo_sessao - self.luzes_tempo_jogo < self.JANELA_VOLTA_LARGADA
+        if self.lgot_t is not None:          # o app abriu com a corrida em andamento
+            return False
+        return self.viu_formacao or self.luzes_largada
+
+    def _volta_de_corrida(self, i, c, volta_jogo):
+        """Volta da corrida. Se o jogo contar a volta de apresentação como "volta 1" (a corrida começando
+        na "volta 2"), ela é descontada: ninguém fecha uma volta de corrida antes das luzes
+        ou nos primeiros 30 segundos depois delas."""
+        if self.eh_corrida and c.desloc_volta == 0 and volta_jogo >= 2 and self._antes_da_largada():
+            c.desloc_volta = volta_jogo - 1
+            c.invalida = c.teve_pit = False
+            if i == self.jogador:
+                print(f"[LARGADA] O jogo passou para a volta {volta_jogo} antes da corrida começar "
+                      f"({self._quando_luzes()}): é a volta de apresentação, não conta.", flush=True)
+        if i == self.jogador and self.eh_corrida and volta_jogo != self._volta_jogo_jog:
+            if self._volta_jogo_jog is not None and volta_jogo <= 3:
+                print(f"[LARGADA] Volta do jogo {self._volta_jogo_jog} -> {volta_jogo} ({self._quando_luzes()}).",
+                      flush=True)
+            self._volta_jogo_jog = volta_jogo
+        return max(0, volta_jogo - c.desloc_volta)
+
+    def _quando_luzes(self):
+        if self.volta_jogo_luzes is None:
+            return "antes das luzes apagarem" if self._antes_da_largada() else "sem o aviso de luzes apagadas"
+        return f"{self.tempo_sessao - self.luzes_tempo_jogo:.0f} s depois das luzes apagarem"
 
     def _corrida_ja_comecou(self):
         eu = self.eu if self.carros else None
@@ -916,6 +952,8 @@ class Sessao:
             return False
         if (eu.volta or 0) >= 2:
             return True
+        if self.luzes_largada and (eu.vel or 0) > 100:
+            return True                              # as luzes já acenderam e o carro está andando
         # no meio da 1ª volta, andando rápido, sem volta de apresentação (o app abriu depois das luzes)
         comp = self.comprimento_pista or 0
         dist = getattr(self, "_dist", 0) or 0
@@ -1034,12 +1072,14 @@ class Sessao:
         self.clima = iv(p.m_weather)
         self.temp_pista = iv(p.m_trackTemperature)
         self.temp_ar = iv(p.m_airTemperature)
-        self.total_voltas = iv(p.m_totalLaps)
+        self.total_voltas = max(0, iv(p.m_totalLaps) - self.eu.desloc_volta)
         self.tempo_restante = iv(p.m_sessionTimeLeft)
         self.duracao = iv(p.m_sessionDuration)
         sc_antes = self.safety_car
         self.safety_car = iv(p.m_safetyCarStatus)
         self.formacao_cfg = iv(getattr(p, "m_formationLap", 0))
+        if self.eh_corrida and self.lgot_t is None and self.safety_car == 3:
+            self.viu_formacao = True
         if self.eh_corrida and self.lgot_t is None:
             if self.safety_car == 3 and self._pedir_teste_formacao and not self.luzes_largada:
                 self._pedir_teste_formacao = False      # volta de apresentação: boa hora para o teste de rádio
@@ -1328,7 +1368,7 @@ class Sessao:
             self._guardar_dist(i, float(getattr(ld, "m_totalDistance", 0) or 0))
             c.pit_status = iv(ld.m_pitStatus)
             c.paradas = iv(ld.m_numPitStops)
-            volta = iv(ld.m_currentLapNum)
+            volta = self._volta_de_corrida(i, c, iv(ld.m_currentLapNum))
             s1 = iv(ld.m_sector1TimeInMS) + 60000 * iv(getattr(ld, "m_sector1TimeMinutes", 0))
             s2 = iv(ld.m_sector2TimeInMS) + 60000 * iv(getattr(ld, "m_sector2TimeMinutes", 0))
             setor = iv(ld.m_sector)
@@ -1430,6 +1470,10 @@ class Sessao:
             self._t_luzes = time.monotonic()
             if self.eh_corrida and self.lgot_t is None:
                 self.lgot_t = self._t_luzes
+                self.volta_jogo_luzes = self._volta_jogo_jog if self._volta_jogo_jog is not None else 0
+                self.luzes_tempo_jogo = self.tempo_sessao
+                print(f"[LARGADA] Luzes apagadas. Volta no jogo: {self.volta_jogo_luzes}, "
+                      f"volta de apresentação: {'sim' if self.viu_formacao else 'não'}.", flush=True)
                 self.radio.descartar_fila(1)
         if cod == "RTMT" and det is not None:
             motivo = getattr(det, "m_reason", 0)
@@ -3060,12 +3104,12 @@ class Engenheiro:
             s.jogador = jog
         try:
             s.ultimo_pacote = time.monotonic()
+            s.tempo_sessao = float(cab.m_sessionTime)
             if pid == 0:
                 s.on_movimento(pac)
             elif pid == 1:
                 s.on_sessao(pac)
             elif pid == 2:
-                s.tempo_sessao = float(cab.m_sessionTime)
                 s.on_voltas(pac)
             elif pid == 3:
                 s.on_evento(pac)

@@ -7,6 +7,9 @@ Abra o engenheiro em uma janela e, em outra, rode:
     python simulador.py classificacao   -> Classificação 1 (zona de corte, minutos finais)
 
 Opções: --formato 2025  (padrão 2026)   --velocidade 10  (quantas vezes mais rápido que o real)
+        --largada --formacao                       -> grid, volta de apresentação e luzes
+        --largada --formacao --apresentacao-conta  -> o mesmo, mas com o jogo contando a apresentação
+                                                      como "volta 1" (a corrida começa na "volta 2")
 """
 
 import base64
@@ -68,6 +71,8 @@ INCIDENTES = "--incidentes" in sys.argv     # corrida com abandono, toque, asa q
 DEMO = False                                # demonstração dentro do app: incidentes + Safety Car + chuva
 GRID = "--largada" in sys.argv              # espera no grid, luzes acendendo e luzes apagadas (LGOT)
 FORMACAO = "--formacao" in sys.argv         # com volta de apresentação antes do grid
+# teste: o jogo conta a volta de apresentação como "volta 1" (a corrida começa na "volta 2")
+APRESENTACAO_CONTA = FORMACAO and "--apresentacao-conta" in sys.argv
 PARAR_DEMO = None
 CENARIO = "classificacao" if "classificacao" in sys.argv else ("treino" if "treino" in sys.argv else "corrida")
 UID = random.getrandbits(63)
@@ -322,11 +327,19 @@ def rodar():
             frac = (max(c.dist, 0) % comp)
             setor = 0 if frac < comp / 3 else (1 if frac < 2 * comp / 3 else 2)
             ultima = int(c.tempos[-1] * 1000) if c.tempos else 0
+            volta_jogo = c.volta
+            if APRESENTACAO_CONTA and corrida and GRID:
+                # a apresentação aparece como "volta 1", fechada (com tempo) ao chegar no grid
+                if no_grid and t < ESPERA_GRID - 12:
+                    volta_jogo = 1
+                else:
+                    volta_jogo = c.volta + 1
+                    ultima = ultima or 150000
             st_piloto = 0 if (not corrida and c is eu and eu_garagem) else (1 if not corrida else 4)
             lds.append(LapData.from_values(
                 ultima, int(c.t_volta * 1000), c.s1 % 60000, c.s1 // 60000, c.s2 % 60000, c.s2 // 60000,
                 int(dif * 1000) % 60000, int(dif * 1000) // 60000, int(lider * 1000) % 60000,
-                int(lider * 1000) // 60000, frac, c.dist, 0.0, k, c.volta, c.pit_status, c.pits, setor,
+                int(lider * 1000) // 60000, frac, c.dist, 0.0, k, volta_jogo, c.pit_status, c.pits, setor,
                 c.invalida, pen if c is eu else 0, adv if c is eu else 0, adv if c is eu else 0, 0, 0,
                 5 if c is eu else c.i + 1, st_piloto, c.resultado, 0, 0, 0, 0, 0.0, 0, packet_format=FORMATO))
         vazio = LapData.from_values(*([0] * 10), 0.0, 0.0, 0.0, *([0] * 18), 0.0, 0, packet_format=FORMATO)
@@ -377,7 +390,7 @@ def rodar():
                 enviar(PacketCarTelemetry2Data.from_values(cabecalho(F1PacketType.CAR_TELEMETRY_2, t),
                                                            completar(t2, t2[-1])))
         if passo % 10 == 0:
-            sessao(t, tipo, pista, total_voltas, clima, t_restante, duracao, sc, previsao, 6 if corrida else 0,
+            sessao(t, tipo, pista, total_voltas + (1 if APRESENTACAO_CONTA else 0), clima, t_restante, duracao, sc, previsao, 6 if corrida else 0,
                    8 if corrida else 0)
             cab = cabecalho(F1PacketType.PARTICIPANTS, t)
             cores = [LiveryColour.from_values(200, 30, 30)] * 4
