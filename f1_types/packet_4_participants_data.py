@@ -1,0 +1,828 @@
+# MIT License
+#
+# Copyright (c) [2024] [Ashwin Natarajan]
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
+import struct
+from typing import Any, Dict, List, Optional
+
+from .base_pkt import F1PacketBase, F1SubPacketBase
+from .common import (MAX_CARS_2026, Nationality, Platform, TelemetrySetting,
+                     get_num_cars)
+from .team_id import (TeamID, TeamID23, TeamID24, TeamID25, TeamID26,
+                      get_team_id)
+from .header import PacketHeader
+
+# --------------------- CLASS DEFINITIONS --------------------------------------
+
+class LiveryColour(F1SubPacketBase):
+    """
+    A class representing a livery colour in a racing simulation.
+
+    Attributes:
+        m_red (int): Red component (0-255).
+        m_green (int): Green component (0-255).
+        m_blue (int): Blue component (0-255).
+
+    Restricted Telemetry:
+        None. No field in this structure is affected by the "Your Telemetry" setting.
+    """
+
+    COMPILED_PACKET_STRUCT = struct.Struct("<"
+        "B" # uint8      red
+        "B" # uint8      green
+        "B" # uint8      blue
+    )
+    PACKET_LEN = COMPILED_PACKET_STRUCT.size
+
+    __slots__ = (
+        "m_red",
+        "m_green",
+        "m_blue",
+    )
+
+    def __init__(self, data: bytes) -> None:
+        """Initializes a LiveryColour object with the given raw data."""
+        self.m_red: int
+        self.m_green: int
+        self.m_blue: int
+
+        self.m_red, self.m_green, self.m_blue = self.COMPILED_PACKET_STRUCT.unpack(data)
+
+    def toJSON(self) -> Dict[str, Any]:
+        """Returns a dictionary representation of the LiveryColour object."""
+        return {
+            "red": self.m_red,
+            "green": self.m_green,
+            "blue": self.m_blue,
+        }
+
+    def __eq__(self, other: "LiveryColour") -> bool:
+        """Compares two LiveryColour objects for equality."""
+        return self.m_red == other.m_red and self.m_green == other.m_green and self.m_blue == other.m_blue
+
+    def __ne__(self, other: "LiveryColour") -> bool:
+        """Compares two LiveryColour objects for inequality."""
+        return not self.__eq__(other)
+
+    def __str__(self) -> str:
+        """Returns a string representation of the LiveryColour object."""
+        return f"Red: {self.m_red}, Green: {self.m_green}, Blue: {self.m_blue}"
+
+    def __repr__(self) -> str:
+        """Returns a string representation of the LiveryColour object."""
+        return self.__str__()
+
+    @classmethod
+    def from_values(cls, red: int, green: int, blue: int) -> "LiveryColour":
+        return LiveryColour(LiveryColour.COMPILED_PACKET_STRUCT.pack(red, green, blue))
+
+    def to_bytes(self) -> bytes:
+        return LiveryColour.COMPILED_PACKET_STRUCT.pack(self.m_red, self.m_green, self.m_blue)
+
+class ParticipantData(F1SubPacketBase):
+    """
+    A class representing participant data in a racing simulation.
+
+    Attributes:
+        m_aiControlled (bool): Whether the vehicle is AI (True) or Human (False) controlled.
+        m_driverId (int): Driver id - see appendix, 255 if network human.
+        networkId (int): Network id - unique identifier for network players.
+        m_teamId (TeamID): See TeamID enumeration
+        m_myTeam (bool): My team flag - True = My Team, False = otherwise.
+        m_raceNumber (int): Race number of the car.
+        m_nationality (int): Nationality of the driver.
+        m_name (str): Name of participant in UTF-8 format - null terminated.
+                      Will be truncated with … (U+2026) if too long.
+        m_yourTelemetry (TelemetrySetting): The player's UDP setting (see TelemetrySetting enumeration)
+        m_showOnlineNames (bool): The player's show online names setting, False = off, True = on.
+        m_platform (Platform): Gaming platform (see Platform enumeration).
+
+        Note:
+            The m_platform attribute is an instance of Platform.
+
+    Restricted Telemetry:
+        None. No field in this structure is affected by the "Your Telemetry" setting.
+    """
+
+    GENERIC_TEAMS = {
+        TeamID23.F1_CUSTOM_TEAM,
+        TeamID24.F1_CUSTOM_TEAM,
+        TeamID24.F1_GENERIC,
+        TeamID25.F1_CUSTOM_TEAM,
+        TeamID25.F1_GENERIC,
+        TeamID26.F1_CUSTOM_TEAM,
+        TeamID26.F1_GENERIC,
+    }
+
+    COMPILED_PACKET_STRUCT_23 = struct.Struct("<"
+        "B" # uint8      m_aiControlled;      // Whether the vehicle is AI (1) or Human (0) controlled
+        "B" # uint8      m_driverId;       // Driver id - see appendix, 255 if network human
+        "B" # uint8      m_networkId;       // Network id – unique identifier for network players
+        "B" # uint8      m_teamId;            // Team id - see appendix
+        "B" # uint8      m_myTeam;            // My team flag – 1 = My Team, 0 = otherwise
+        "B" # uint8      m_raceNumber;        // Race number of the car
+        "B" # uint8      m_nationality;       // Nationality of the driver
+        "48s" # char     m_name[48];          // Name of participant in UTF-8 format – null terminated
+                                        # // Will be truncated with … (U+2026) if too long
+        "B" # uint8      m_yourTelemetry;     // The player's UDP setting, 0 = restricted, 1 = public
+        "B" # uint8      m_showOnlineNames;   // The player's show online names setting, 0 = off, 1 = on
+        "B" # uint8      m_platform;          // 1 = Steam, 3 = PlayStation, 4 = Xbox, 6 = Origin, 255 = unknown
+    )
+    PACKET_LEN_23 = COMPILED_PACKET_STRUCT_23.size
+
+    COMPILED_PACKET_STRUCT_24 = struct.Struct("<"
+        "B" # uint8      m_aiControlled;      // Whether the vehicle is AI (1) or Human (0) controlled
+        "B" # uint8      m_driverId;       // Driver id - see appendix, 255 if network human
+        "B" # uint8      m_networkId;       // Network id – unique identifier for network players
+        "B" # uint8      m_teamId;            // Team id - see appendix
+        "B" # uint8      m_myTeam;            // My team flag – 1 = My Team, 0 = otherwise
+        "B" # uint8      m_raceNumber;        // Race number of the car
+        "B" # uint8      m_nationality;       // Nationality of the driver
+        "48s" # char     m_name[48];          // Name of participant in UTF-8 format – null terminated
+                                        # // Will be truncated with … (U+2026) if too long
+        "B" # uint8      m_yourTelemetry;     // The player's UDP setting, 0 = restricted, 1 = public
+        "B" # uint8      m_showOnlineNames;   // The player's show online names setting, 0 = off, 1 = on
+        "H" # uint16     m_techLevel          // F1 World tech level
+        "B" # uint8      m_platform;          // 1 = Steam, 3 = PlayStation, 4 = Xbox, 6 = Origin, 255 = unknown
+    )
+    PACKET_LEN_24 = COMPILED_PACKET_STRUCT_24.size
+
+    MAX_LIVERY_COLOURS = 4
+    COMPILED_PACKET_STRUCT_26_BASE = struct.Struct("<"
+        "B" # uint8      m_aiControlled;      // Whether the vehicle is AI (1) or Human (0) controlled
+        "H" # uint16     m_driverId;       // Driver id - see appendix, 65535 if network human
+        "H" # uint16     m_networkId;       // Network id – unique identifier for network players
+        "H" # uint16     m_teamId;            // Team id - see appendix (widened from uint8)
+        "B" # uint8      m_myTeam;            // My team flag – 1 = My Team, 0 = otherwise
+        "B" # uint8      m_raceNumber;        // Race number of the car
+        "B" # uint8      m_nationality;       // Nationality of the driver
+        "32s" # char     m_name[32];          // Name of participant in UTF-8 format – null terminated
+        "B" # uint8      m_yourTelemetry;     // The player's UDP setting, 0 = restricted, 1 = public
+        "B" # uint8      m_showOnlineNames;   // The player's show online names setting, 0 = off, 1 = on
+        "H" # uint16     m_techLevel          // F1 World tech level
+        "B" # uint8      m_platform;          // 1 = Steam, 3 = PlayStation, 4 = Xbox, 6 = Origin, 255 = unknown
+        "B" # uint8      m_numColours          // Number of colors in the livery
+    )
+    PACKET_LEN_26_BASE = COMPILED_PACKET_STRUCT_26_BASE.size
+    PACKET_LEN_26 = PACKET_LEN_26_BASE + (LiveryColour.PACKET_LEN * MAX_LIVERY_COLOURS)
+
+    COMPILED_PACKET_STRUCT_25_BASE = struct.Struct("<"
+        "B" # uint8      m_aiControlled;      // Whether the vehicle is AI (1) or Human (0) controlled
+        "B" # uint8      m_driverId;       // Driver id - see appendix, 255 if network human
+        "B" # uint8      m_networkId;       // Network id – unique identifier for network players
+        "B" # uint8      m_teamId;            // Team id - see appendix
+        "B" # uint8      m_myTeam;            // My team flag – 1 = My Team, 0 = otherwise
+        "B" # uint8      m_raceNumber;        // Race number of the car
+        "B" # uint8      m_nationality;       // Nationality of the driver
+        "32s" # char     m_name[32];          // Name of participant in UTF-8 format – null terminated
+                                        # // Will be truncated with … (U+2026) if too long
+        "B" # uint8      m_yourTelemetry;     // The player's UDP setting, 0 = restricted, 1 = public
+        "B" # uint8      m_showOnlineNames;   // The player's show online names setting, 0 = off, 1 = on
+        "H" # uint16     m_techLevel          // F1 World tech level
+        "B" # uint8      m_platform;          // 1 = Steam, 3 = PlayStation, 4 = Xbox, 6 = Origin, 255 = unknown
+        "B" # uint8      m_numColours          // Number of colors in the livery
+    )
+    PACKET_LEN_25_BASE = COMPILED_PACKET_STRUCT_25_BASE.size
+    PACKET_LEN_25 = PACKET_LEN_25_BASE + (LiveryColour.PACKET_LEN * MAX_LIVERY_COLOURS)
+
+    __slots__ = (
+        "m_packetFormat",
+        "m_aiControlled",
+        "m_driverId",
+        "networkId",
+        "m_teamId",
+        "m_myTeam",
+        "m_raceNumber",
+        "m_nationality",
+        "m_name",
+        "m_yourTelemetry",
+        "m_showOnlineNames",
+        "m_platform",
+        "m_techLevel",
+        "m_numColours",
+        "m_liveryColours",
+    )
+
+    def __init__(self, data: bytes, packet_format: int) -> None:
+        """
+        Initializes a ParticipantData object by unpacking the provided binary data.
+
+        Parameters:
+            data (bytes): Binary data to be unpacked.
+            packet_format (int): The packet format
+
+        Raises:
+            struct.error: If the binary data does not match the expected format.
+        """
+        self.m_packetFormat = packet_format
+        self.m_numColours: int = 0
+        self.m_liveryColours: List[LiveryColour]
+        self._parse(data, packet_format)
+        self._cast_enums(packet_format)
+
+    def _parse(self, data: bytes, packet_format: int) -> None:
+        """Raw byte unpacking only. Dispatches to format-specific helpers."""
+        if packet_format == 2023:
+            self._parse_f23(data)
+        elif packet_format == 2024:
+            self._parse_f24(data)
+        elif packet_format == 2025:
+            self._parse_f25(data)
+        else:  # >= 2026
+            self._parse_f26(data)
+        self.m_name = self.m_name.decode('utf-8', errors='replace').rstrip('\x00')
+
+    def _parse_f23(self, data: bytes) -> None:
+        (
+            self.m_aiControlled,
+            self.m_driverId,
+            self.networkId,
+            self.m_teamId,
+            self.m_myTeam,
+            self.m_raceNumber,
+            self.m_nationality,
+            self.m_name,
+            self.m_yourTelemetry,
+            self.m_showOnlineNames,
+            self.m_platform
+        ) = self.COMPILED_PACKET_STRUCT_23.unpack(data)
+        self.m_techLevel = 0
+
+    def _parse_f24(self, data: bytes) -> None:
+        (
+            self.m_aiControlled,
+            self.m_driverId,
+            self.networkId,
+            self.m_teamId,
+            self.m_myTeam,
+            self.m_raceNumber,
+            self.m_nationality,
+            self.m_name,
+            self.m_yourTelemetry,
+            self.m_showOnlineNames,
+            self.m_techLevel,
+            self.m_platform
+        ) = self.COMPILED_PACKET_STRUCT_24.unpack(data)
+
+    def _parse_f25(self, data: bytes) -> None:
+        (
+            self.m_aiControlled,
+            self.m_driverId,
+            self.networkId,
+            self.m_teamId,
+            self.m_myTeam,
+            self.m_raceNumber,
+            self.m_nationality,
+            self.m_name,
+            self.m_yourTelemetry,
+            self.m_showOnlineNames,
+            self.m_techLevel,
+            self.m_platform,
+            self.m_numColours
+        ) = self.COMPILED_PACKET_STRUCT_25_BASE.unpack(data[:self.PACKET_LEN_25_BASE])
+
+        self.m_liveryColours, _ = LiveryColour.parse_array(
+            data=data,
+            offset=self.PACKET_LEN_25_BASE,
+            item_len=LiveryColour.PACKET_LEN,
+            count=self.m_numColours,
+            max_count=self.MAX_LIVERY_COLOURS
+        )
+
+    def _parse_f26(self, data: bytes) -> None:
+        (
+            self.m_aiControlled,
+            self.m_driverId,
+            self.networkId,
+            self.m_teamId,
+            self.m_myTeam,
+            self.m_raceNumber,
+            self.m_nationality,
+            self.m_name,
+            self.m_yourTelemetry,
+            self.m_showOnlineNames,
+            self.m_techLevel,
+            self.m_platform,
+            self.m_numColours
+        ) = self.COMPILED_PACKET_STRUCT_26_BASE.unpack(data[:self.PACKET_LEN_26_BASE])
+
+        self.m_liveryColours, _ = LiveryColour.parse_array(
+            data=data,
+            offset=self.PACKET_LEN_26_BASE,
+            item_len=LiveryColour.PACKET_LEN,
+            count=self.m_numColours,
+            max_count=self.MAX_LIVERY_COLOURS
+        )
+
+    def _cast_enums(self, packet_format: int) -> None:
+        """All safeCast and bool conversions in one place."""
+        self.m_platform = Platform.safeCast(self.m_platform)
+        self.m_teamId = get_team_id(self.m_teamId, packet_format)
+        self.m_yourTelemetry = TelemetrySetting.safeCast(self.m_yourTelemetry)
+        self.m_nationality = Nationality.safeCast(self.m_nationality)
+        self.m_showOnlineNames = bool(self.m_showOnlineNames)
+        self.m_myTeam = bool(self.m_myTeam)
+        self.m_aiControlled = bool(self.m_aiControlled)
+
+    def __str__(self):
+        """
+        Returns a string representation of the ParticipantData object.
+
+        Returns:
+            str: String representation of the object.
+        """
+        return (
+            f"ParticipantData("
+            f"m_aiControlled={self.m_aiControlled}, "
+            f"m_driverId={self.m_driverId}, "
+            f"networkId={self.networkId}, "
+            f"m_teamId={self.m_teamId}, "
+            f"m_myTeam={str(self.m_myTeam)}, "
+            f"m_raceNumber={self.m_raceNumber}, "
+            f"m_nationality={self.m_nationality}, "
+            f"m_name={self.m_name}, "
+            f"m_yourTelemetry={str(self.m_yourTelemetry)}, "
+            f"m_showOnlineNames={str(self.m_showOnlineNames)}, "
+            f"m_techLevel={str(self.m_techLevel)}, "
+            f"m_platform={str(self.m_platform)})"
+        )
+
+    def toJSON(self) -> Dict[str, Any]:
+        """
+        Convert the ParticipantData instance to a JSON-compatible dictionary.
+
+        Returns:
+            Dict[str, Any]: JSON-compatible dictionary representing the ParticipantData instance.
+        """
+
+        return {
+            "ai-controlled": self.m_aiControlled,
+            "driver-id": self.m_driverId,
+            "network-id": self.networkId,
+            "team-id": str(self.m_teamId),
+            "my-team": self.m_myTeam,
+            "race-number": self.m_raceNumber,
+            "nationality": str(self.m_nationality),
+            "name": self.m_name,
+            "telemetry-setting": str(self.m_yourTelemetry),
+            "show-online-names": self.m_showOnlineNames,
+            "tech-level" : self.m_techLevel,
+            "platform": str(self.m_platform)
+        }
+
+    @property
+    def name(self) -> str:
+        """
+        Get the name of the participant. If showOnlineNames is disabled, return the team name and driver number
+
+        Returns:
+            str: The name of the participant.
+        """
+        if self.m_aiControlled or self.m_showOnlineNames:
+            return self.m_name
+
+        if self.m_teamId in self.GENERIC_TEAMS:
+            return f"Player #{self.m_raceNumber}"
+        return f"{self.m_teamId} #{self.m_raceNumber}"
+
+    def to_bytes(self) -> bytes:
+        """
+        Convert the ParticipantData instance to bytes.
+
+        Returns:
+            bytes: Bytes representation of the ParticipantData instance.
+        """
+        if self.m_packetFormat == 2023:
+            return self.COMPILED_PACKET_STRUCT_23.pack(
+                self.m_aiControlled,
+                self.m_driverId,
+                self.networkId,
+                self.m_teamId.value,
+                self.m_myTeam,
+                self.m_raceNumber,
+                self.m_nationality.value,
+                self.m_name.encode('utf-8'),
+                self.m_yourTelemetry.value,
+                self.m_showOnlineNames,
+                self.m_platform.value
+            )
+        if self.m_packetFormat == 2024:
+            return self.COMPILED_PACKET_STRUCT_24.pack(
+                self.m_aiControlled,
+                self.m_driverId,
+                self.networkId,
+                self.m_teamId.value,
+                self.m_myTeam,
+                self.m_raceNumber,
+                self.m_nationality.value,
+                self.m_name.encode('utf-8'),
+                self.m_yourTelemetry.value,
+                self.m_showOnlineNames,
+                self.m_techLevel,
+                self.m_platform.value
+            )
+        if self.m_packetFormat >= 2026:
+            return struct.pack(self.COMPILED_PACKET_STRUCT_26_BASE.format + "BBB" * self.MAX_LIVERY_COLOURS,
+                self.m_aiControlled,
+                self.m_driverId,
+                self.networkId,
+                self.m_teamId.value,
+                self.m_myTeam,
+                self.m_raceNumber,
+                self.m_nationality.value,
+                self.m_name.encode('utf-8'),
+                self.m_yourTelemetry.value,
+                self.m_showOnlineNames,
+                self.m_techLevel,
+                self.m_platform.value,
+                self.m_numColours,
+                self.m_liveryColours[0].m_red,
+                self.m_liveryColours[0].m_green,
+                self.m_liveryColours[0].m_blue,
+                self.m_liveryColours[1].m_red,
+                self.m_liveryColours[1].m_green,
+                self.m_liveryColours[1].m_blue,
+                self.m_liveryColours[2].m_red,
+                self.m_liveryColours[2].m_green,
+                self.m_liveryColours[2].m_blue,
+                self.m_liveryColours[3].m_red,
+                self.m_liveryColours[3].m_green,
+                self.m_liveryColours[3].m_blue,
+            )
+        return struct.pack(self.COMPILED_PACKET_STRUCT_25_BASE.format + "BBB" * self.MAX_LIVERY_COLOURS,
+            self.m_aiControlled,
+            self.m_driverId,
+            self.networkId,
+            self.m_teamId.value,
+            self.m_myTeam,
+            self.m_raceNumber,
+            self.m_nationality.value,
+            self.m_name.encode('utf-8'),
+            self.m_yourTelemetry.value,
+            self.m_showOnlineNames,
+            self.m_techLevel,
+            self.m_platform.value,
+            self.m_numColours,
+            self.m_liveryColours[0].m_red,
+            self.m_liveryColours[0].m_green,
+            self.m_liveryColours[0].m_blue,
+            self.m_liveryColours[1].m_red,
+            self.m_liveryColours[1].m_green,
+            self.m_liveryColours[1].m_blue,
+            self.m_liveryColours[2].m_red,
+            self.m_liveryColours[2].m_green,
+            self.m_liveryColours[2].m_blue,
+            self.m_liveryColours[3].m_red,
+            self.m_liveryColours[3].m_green,
+            self.m_liveryColours[3].m_blue,
+        )
+
+    def __eq__(self, other: "ParticipantData") -> bool:
+        """
+        Checks if two ParticipantData objects are equal.
+
+        Args:
+            other (ParticipantData): The other ParticipantData object to compare with.
+
+        Returns:
+            bool: True if the objects are equal, False otherwise.
+        """
+        return (
+            self.m_packetFormat == other.m_packetFormat and
+            self.m_aiControlled == other.m_aiControlled and
+            self.m_driverId == other.m_driverId and
+            self.networkId == other.networkId and
+            self.m_teamId == other.m_teamId and
+            self.m_myTeam == other.m_myTeam and
+            self.m_raceNumber == other.m_raceNumber and
+            self.m_nationality == other.m_nationality and
+            self.m_name == other.m_name and
+            self.m_yourTelemetry == other.m_yourTelemetry and
+            self.m_showOnlineNames == other.m_showOnlineNames and
+            self.m_techLevel == other.m_techLevel and
+            self.m_platform == other.m_platform
+        )
+
+    def __ne__(self, other: "ParticipantData") -> bool:
+        """
+        Checks if two ParticipantData objects are not equal.
+
+        Args:
+            other (ParticipantData): The other ParticipantData object to compare with.
+
+        Returns:
+            bool: True if the objects are not equal, False otherwise.
+        """
+        return not self.__eq__(other)
+
+    @classmethod
+    def from_values(cls,
+                    header: PacketHeader,
+                    ai_controlled: bool,
+                    driver_id: int,
+                    network_id: int,
+                    team_id: TeamID,
+                    my_team: bool,
+                    race_number: int,
+                    nationality: Nationality,
+                    name: str,
+                    your_telemetry: TelemetrySetting,
+                    show_online_names: bool,
+                    platform: Platform,
+                    tech_level: Optional[int] = 0,
+                    num_colours: Optional[int] = 4,
+                    liveries: Optional[List[LiveryColour]] = None,
+                    ) -> "ParticipantData":
+        """
+        Creates a new ParticipantData object with the provided values.
+
+        Args:
+            header (PacketHeader): Header containing general information about the packet.
+            ai_controlled (bool): Whether the car is an AI car or not.
+            driver_id (int): ID of the car's driver.
+            network_id (int): ID of the car on the network.
+            team_id (Union[TeamID23, TeamID24, TeamID25]): ID of the car's team.
+            my_team (bool): Whether the car is on its team or not.
+            race_number (int): Race number of the car.
+            nationality (Nationality): Nationality of the car.
+            name (str): Name of the car.
+            your_telemetry (TelemetrySetting): Your telemetry setting.
+            show_online_names (bool): Whether to show online names or not.
+            platform (Platform): Platform of the car.
+            tech_level (Optional[int], optional): Tech level of the car. Defaults to 0. Will only be considered for 24
+            num_colours (Optional[int], optional): Number of colours of the car. Defaults to 4.
+            liveries (Optional[List[LiveryColour]], optional): List of livery colours of the car. Defaults to None.
+
+        Returns:
+            ParticipantData: A new ParticipantData object with the provided values.
+        """
+
+        if header.m_packetFormat == 2023:
+            data = ParticipantData.COMPILED_PACKET_STRUCT_23.pack(
+                ai_controlled,
+                driver_id,
+                network_id,
+                team_id.value,
+                my_team,
+                race_number,
+                nationality.value,
+                name.encode('utf-8'),
+                your_telemetry.value,
+                show_online_names,
+                platform.value
+            )
+        elif header.m_packetFormat == 2024:
+            data = ParticipantData.COMPILED_PACKET_STRUCT_24.pack(
+                ai_controlled,
+                driver_id,
+                network_id,
+                team_id.value,
+                my_team,
+                race_number,
+                nationality.value,
+                name.encode('utf-8'),
+                your_telemetry.value,
+                show_online_names,
+                tech_level,
+                platform.value
+            )
+        elif header.m_packetFormat == 2025:
+            # one byte for num colours, 3*4 bytes for liveries
+            data = struct.pack(ParticipantData.COMPILED_PACKET_STRUCT_25_BASE.format + "BBB" * 4,
+                ai_controlled,
+                driver_id,
+                network_id,
+                team_id.value,
+                my_team,
+                race_number,
+                nationality.value,
+                name.encode('utf-8'),
+                your_telemetry.value,
+                show_online_names,
+                tech_level,
+                platform.value,
+                num_colours,
+                liveries[0].m_red,
+                liveries[0].m_green,
+                liveries[0].m_blue,
+                liveries[1].m_red,
+                liveries[1].m_green,
+                liveries[1].m_blue,
+                liveries[2].m_red,
+                liveries[2].m_green,
+                liveries[2].m_blue,
+                liveries[3].m_red,
+                liveries[3].m_green,
+                liveries[3].m_blue
+            )
+        elif header.m_packetFormat >= 2026:
+            data = struct.pack(ParticipantData.COMPILED_PACKET_STRUCT_26_BASE.format + "BBB" * 4,
+                ai_controlled,
+                driver_id,
+                network_id,
+                team_id.value,
+                my_team,
+                race_number,
+                nationality.value,
+                name.encode('utf-8'),
+                your_telemetry.value,
+                show_online_names,
+                tech_level,
+                platform.value,
+                num_colours,
+                liveries[0].m_red,
+                liveries[0].m_green,
+                liveries[0].m_blue,
+                liveries[1].m_red,
+                liveries[1].m_green,
+                liveries[1].m_blue,
+                liveries[2].m_red,
+                liveries[2].m_green,
+                liveries[2].m_blue,
+                liveries[3].m_red,
+                liveries[3].m_green,
+                liveries[3].m_blue
+            )
+        else:
+            raise NotImplementedError(f"Unsupported packet format: {header.m_packetFormat}")
+        return cls(data, header.m_packetFormat)
+
+class PacketParticipantsData(F1PacketBase):
+    """
+    A class representing participant data in a racing simulation.
+
+    Attributes:
+        max_participants (int): Maximum number of participants (cars) in the packet.
+        m_header (PacketHeader): Header containing general information about the packet.
+        m_numActiveCars (int): Number of active cars in the data - should match the number of cars on HUD.
+        m_participants (List[ParticipantData]): List of ParticipantData objects representing information
+            about each participant in the race.
+
+            Note:
+                The length of m_participants should not exceed max_participants.
+    """
+
+    MAX_PARTICIPANTS = 24
+
+    __slots__ = (
+        "m_numActiveCars",
+        "m_participants",
+    )
+
+    def __init__(self, header: PacketHeader, packet: bytes) -> None:
+        """
+        Initializes a PacketParticipantsData object by unpacking the provided binary data.
+
+        Parameters:
+            header (PacketHeader): Header containing general information about the packet.
+            packet (bytes): Binary data to be unpacked.
+
+        Raises:
+            struct.error: If the binary data does not match the expected format.
+        """
+
+        super().__init__(header)
+        self.m_numActiveCars: int = struct.unpack("<B", packet[:1])[0]
+        match header.m_packetFormat:
+            case 2023:
+                packet_len = ParticipantData.PACKET_LEN_23
+            case 2024:
+                packet_len = ParticipantData.PACKET_LEN_24
+            case 2025:
+                packet_len = ParticipantData.PACKET_LEN_25
+            case _:  # >= 2026
+                packet_len = ParticipantData.PACKET_LEN_26
+
+        self.m_participants: List[ParticipantData]
+        self.m_participants, _ = ParticipantData.parse_array(
+            data=packet,
+            offset=1,
+            item_len=packet_len,
+            count=get_num_cars(header.m_packetFormat),
+            max_count=MAX_CARS_2026,
+            packet_format=header.m_packetFormat
+        )
+
+    def __str__(self) -> str:
+        """
+        Returns a string representation of the PacketParticipantsData object.
+
+        Returns:
+            str: String representation of the object.
+        """
+
+        participants_str = ", ".join(str(participant) for participant in self.m_participants)
+        return (
+            f"PacketParticipantsData("
+            f"Header: {str(self.m_header)}, "
+            f"Number of Active Cars: {self.m_numActiveCars}, "
+            f"Participants: [{participants_str}])"
+        )
+
+    def toJSON(self, include_header: bool=False) -> Dict[str, Any]:
+        """
+        Convert the PacketParticipantsData instance to a JSON-compatible dictionary.
+
+        Arguments:
+            - include_header - Whether the header dump must be included in the JSON
+
+        Returns:
+            Dict[str, Any]: JSON-compatible dictionary representing the PacketParticipantsData instance.
+        """
+
+        json_data = {
+            "num-active-cars": self.m_numActiveCars,
+            "participants": [participant.toJSON() for participant in self.m_participants]
+        }
+        if include_header:
+            json_data["header"] = self.m_header.toJSON()
+        return json_data
+
+    def to_bytes(self) -> bytes:
+        """
+        Convert the PacketParticipantsData instance to a bytes object.
+
+        Returns:
+            bytes: Bytes object representing the PacketParticipantsData instance.
+        """
+
+        return (
+            self.m_header.to_bytes() +
+            struct.pack("<B", self.m_numActiveCars) +
+            b''.join([participant.to_bytes() for participant in self.m_participants]))
+
+    @classmethod
+    def from_values(cls,
+                    header: PacketHeader,
+                    num_active_cars: int,
+                    participants: List[ParticipantData]) -> "PacketParticipantsData":
+        """
+        Create a new PacketParticipantsData instance with the provided values.
+
+        Parameters:
+            - header (PacketHeader): Header containing general information about the packet.
+            - num_active_cars (int): Number of active cars in the data - should match the number of cars on HUD.
+            - participants (List[ParticipantData]): List of ParticipantData objects representing information
+                about each participant in the race.
+
+                Note:
+                    The length of participants should not exceed max_participants.
+
+        Returns:
+            PacketParticipantsData: A new PacketParticipantsData instance with the provided values.
+        """
+
+        return cls(header,
+                   struct.pack("<B", num_active_cars) +
+                        b''.join([participant.to_bytes() for participant in participants]))
+
+    def __eq__(self, other: "PacketParticipantsData") -> bool:
+        """
+        Compare two PacketParticipantsData instances for equality.
+
+        Parameters:
+            - other (PacketParticipantsData): The other PacketParticipantsData instance to compare with.
+
+        Returns:
+            bool: True if the two instances are equal, False otherwise.
+        """
+
+        if not isinstance(other, PacketParticipantsData):
+            return False
+        return (
+            self.m_header == other.m_header and
+            self.m_numActiveCars == other.m_numActiveCars and
+            self.m_participants == other.m_participants
+        )
+
+    def __ne__(self, other: "PacketParticipantsData") -> bool:
+        """
+        Compare two PacketParticipantsData instances for inequality.
+
+        Parameters:
+            - other (PacketParticipantsData): The other PacketParticipantsData instance to compare with.
+
+        Returns:
+            bool: True if the two instances are not equal, False otherwise.
+        """
+
+        return not self.__eq__(other)

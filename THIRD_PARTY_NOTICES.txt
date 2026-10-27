@@ -1,0 +1,57 @@
+THIRD-PARTY NOTICES
+===================
+
+Engenheiro includes or uses the following third-party software and data.
+
+1. Pits n' Giggles (f1_types folder) - MIT License
+   https://github.com/ashwin-nat/pits-n-giggles
+   The UDP packet classes in the f1_types folder are based on Pits n' Giggles. Original license:
+
+   MIT License
+   
+   Copyright (c) [2024] [Ashwin Natarajan]
+   
+   Permission is hereby granted, free of charge, to any person obtaining a copy
+   of this software and associated documentation files (the "Software"), to deal
+   in the Software without restriction, including without limitation the rights
+   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+   copies of the Software, and to permit persons to whom the Software is
+   furnished to do so, subject to the following conditions:
+   
+   The above copyright notice and this permission notice shall be included in all
+   copies or substantial portions of the Software.
+   
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+   SOFTWARE.
+2. TracingInsights data (mapas/curvas.json) - Apache License 2.0
+   https://github.com/TracingInsights/2025 - https://tracinginsights.com/
+   mapas/curvas.json contains official corner numbers/positions and pit loss times derived from
+   TracingInsights public data, converted to fractions of the lap and reduced to the fields this app
+   needs (modified). Licensed under the Apache License, Version 2.0:
+   http://www.apache.org/licenses/LICENSE-2.0
+   Distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND.
+
+3. Libraries used by the app (not modified; installed from PyPI and bundled by PyInstaller)
+   - Vosk (Apache 2.0) - https://alphacephei.com/vosk/
+     Speech models are downloaded on first use from alphacephei.com (Apache 2.0).
+   - faster-whisper (MIT) and CTranslate2 (MIT); OpenAI Whisper models (MIT), downloaded on first use.
+   - tokenizers (Apache 2.0)
+   - edge-tts (LGPL-3.0) - https://github.com/rany2/edge-tts
+     Used as a separate, unmodified library. The neural voice uses Microsoft's online text-to-speech
+     service; it may change or stop working at any time, in which case the app falls back to the
+     Windows voice.
+   - NumPy (BSD-3-Clause), SoundFile (BSD-3-Clause), sounddevice (MIT), PyAV (BSD-3-Clause)
+   - Python (PSF License)
+   - PyInstaller (GPL-2.0 with the bootloader exception, which allows distributing the built executable
+     under any license)
+
+The full license texts of the bundled Python packages are included in the _internal folder of the
+release (their *.dist-info folders).
+
+Trademarks: F1 and FORMULA 1 are trademarks of Formula One Licensing B.V. EA SPORTS F1 is a trademark
+of Electronic Arts Inc. Engenheiro is an unofficial fan project, not affiliated with or endorsed by them.

@@ -1,0 +1,130 @@
+﻿ENGENHEIRO - ENGENHEIRO DE CORRIDA POR VOZ PARA O F1 25 (gratuito, não oficial)
+===============================================================================
+
+O que é
+-------
+Um programa gratuito para Windows que transforma a telemetria do F1 25 em um engenheiro de corrida.
+O jogo envia os dados ao vivo pela sua rede de casa (posições, diferenças, desgaste e temperatura dos
+pneus, combustível, clima, danos, paradas) e o programa:
+- fala com você pelo "rádio": tempos de volta, diferenças, desgaste dos pneus, Safety Car, chuva, hora
+  de parar, "box, box", "defenda!", resultado da classificação e da corrida;
+- calcula a melhor estratégia (sem parada, uma ou duas paradas) com o desgaste REAL dos seus pneus;
+- responde perguntas pelo microfone ("quanto falta pro carro da frente?", "o pneu aguenta até o fim?");
+- mostra um painel ao vivo com o mapa da pista, a torre de tempos, o seu carro e as mensagens do rádio;
+- grava todas as sessões e escreve uma análise automática depois de cada treino.
+
+IDIOMA: o engenheiro fala português do Brasil ou inglês. A tela de boas-vindas pergunta qual; para
+trocar depois: Configurações > Idioma > escolha > Salvar. O painel, o rádio, os relatórios e as análises
+mudam na hora; feche e abra o programa para a voz e o microfone do outro idioma começarem também.
+
+Funciona com o F1 25 no PS5, Xbox ou PC. Tudo gratuito, sem cadastro.
+
+
+Requisitos
+----------
+- Um PC ou notebook com Windows 10 ou 11 na mesma rede do console (ou do PC onde roda o jogo).
+- Internet (a voz usa as vozes online gratuitas da Microsoft; os modelos do microfone são baixados
+  na primeira vez).
+- Microsoft Edge (já vem no Windows).
+
+
+Instalação (uns 2 minutos)
+--------------------------
+1. Extraia a pasta em C:\Engenheiro (ou onde preferir; evite pastas do OneDrive).
+2. Abra o "Engenheiro.exe".
+   - O Windows pode mostrar "O Windows protegeu o computador" porque o programa não tem assinatura
+     digital: clique em "Mais informações" e depois em "Executar assim mesmo".
+   - Quando o Firewall do Windows perguntar, marque "Redes privadas" e clique em "Permitir".
+     (Sem isso o programa não recebe os dados do console.)
+3. O painel abre numa janela própria. Fechar a janela encerra o programa e salva a sessão.
+   Na primeira vez, uma tela de boas-vindas pergunta o idioma e o seu nome e mostra o IP para o jogo.
+   Dica: botão direito no .exe > Enviar para > Área de trabalho (criar atalho).
+
+
+Configuração do jogo (F1 25 > Configurações > Configurações de telemetria)
+--------------------------------------------------------------------------
+   Telemetria UDP: Sim
+   Transmissão (broadcast): Não
+   Endereço IP: o IP do PC onde o programa está aberto
+                (jogando no mesmo PC? use 127.0.0.1)
+   Porta: 20777
+   Frequência: 20 Hz
+   Formato UDP: 2025 (ou 2026 com o pacote da temporada 2026)
+Para descobrir o IP do PC: Windows + R, digite cmd, Enter, digite ipconfig e procure
+"Endereço IPv4" (algo como 192.168.0.15). A tela de boas-vindas também mostra.
+
+Depois entre em qualquer sessão (treino, classificação, corrida, contra o relógio). O painel mostra
+"jogo conectado" em verde e o engenheiro diz "Rádio conectado. Estou com você."
+
+
+Demonstração (sem o jogo)
+-------------------------
+Com o jogo fechado, a tela "Aguardando o jogo" tem botões de demonstração (corrida, classificação e
+treino): o programa simula uma sessão curta com a voz e o rádio de verdade, sem gravar nada.
+Configurações e Histórico ficam sempre no topo.
+
+
+Ouvindo o rádio durante a corrida
+---------------------------------
+- Alto-falante do notebook ou qualquer fone ligado ao PC, ou
+- Abra o painel no celular (http://IP-DO-PC:8080), toque em "Ouvir rádio aqui" e use o fone do celular.
+
+
+Falando com o engenheiro (opcional)
+-----------------------------------
+Usa o microfone padrão do PC. Diga "Engenheiro" e a pergunta, por exemplo:
+"Engenheiro, quanto falta pro Verstappen?", "o Leclerc já parou?", "o pneu aguenta até o fim?",
+"quando eu paro?", "onde estou perdendo tempo?", "estou com saída de frente na entrada",
+"silêncio" / "pode falar". Um bip baixinho de rádio confirma que ele ouviu.
+Ou use o botão "Falar" do painel, ou digite a pergunta na caixa embaixo do rádio.
+Na primeira vez o programa baixa os modelos de fala (uns 40 MB + 250 MB): dê alguns minutos com internet.
+Também dá para usar botões do controle:
+F1 25 > Configurações > Controles > editar mapeamento > "Ação UDP 1..7":
+   1 = situação (posição e diferenças)   2 = pneus e combustível   3 = estratégia
+   4 = repetir a última mensagem         5 = abrir o microfone
+   6 = teste de rádio ("alto e claro"; o engenheiro também faz um teste antes de toda corrida)
+   7 = estratégia dos rivais
+Na corrida ele também avisa abandonos (quem, onde e por quê), carros lentos ou parados, toques, asa
+quebrada dos rivais, quem perdeu tempo, quando os rivais devem parar e chances de undercut/overcut.
+Cadastre seus rivais em Configurações > Piloto (o companheiro de equipe já entra).
+
+
+Usando o SimHub junto
+---------------------
+Só um programa pode usar a porta 20777. O engenheiro repassa uma cópia dos dados para a porta 20778,
+então no SimHub coloque a porta UDP do jogo como 20778.
+
+
+Configurações e histórico
+-------------------------
+No painel: "Configurações" (idioma, voz, microfone, avisos, seu nome) e "Histórico" (todas as sessões
+gravadas, com resumo, análise, relatório e acerto usado). Os arquivos ficam na pasta "sessoes".
+
+
+Atualizações
+------------
+Quando sair versão nova, aparece um botão verde "⬆ v..." no topo do painel. Baixe o zip novo na página
+do projeto e extraia por cima da mesma pasta: suas configurações, sessões e acertos continuam lá.
+
+
+Problemas comuns
+----------------
+- "sem dados do jogo": confira o IP e a porta no jogo, permita o programa no Firewall (Redes privadas)
+  e veja se o PC e o console estão na mesma rede.
+- "A porta 20777 já está em uso": feche o SimHub (ou mude a porta dele para 20778, veja acima).
+- Não fala nada: confira a internet e o volume do PC. Sem internet o programa usa a voz do Windows.
+- Microfone não responde: Configurações do Windows > Privacidade e segurança > Microfone > permitir
+  que aplicativos da área de trabalho usem o microfone. Espere o primeiro download terminar.
+- O PC fica lento com o microfone: Configurações > Microfone > Reconhecimento: "Whisper leve" ou "Básico".
+- Qualquer outra coisa: abra uma issue em github.com/yohanfv/engenheiro/issues e anexe o arquivo
+  engenheiro.log da pasta do programa.
+
+
+Créditos e licença
+------------------
+Criado por Yohan Vieira, com a ajuda do Claude (Anthropic).
+Programa livre e gratuito, licença MIT (LICENSE.txt). Componentes e dados de terceiros, como o
+Pits n' Giggles (MIT) e o TracingInsights (Apache 2.0), estão em THIRD_PARTY_NOTICES.txt.
+
+Projeto de fã, não oficial. Sem vínculo com a Formula 1, a FIA, a Electronic Arts ou a Codemasters.
+F1 e FORMULA 1 são marcas registradas da Formula One Licensing B.V.

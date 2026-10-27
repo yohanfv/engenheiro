@@ -1,0 +1,1005 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Engenheiro</title>
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fundo: #0b0d12; --painel: #141821; --painel2: #1b2030; --linha: #262c3d;
+    --texto: #eef1f7; --suave: #8a93a8; --fraco: #5b6378;
+    --verde: #20d070; --roxo: #b34dff; --amarelo: #ffd23f; --laranja: #ff8a1f; --vermelho: #ff3b3b;
+    --azul: #3aa0ff; --destaque: #e10600;
+    --mono: "Consolas", "Menlo", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--fundo); color: var(--texto);
+    font-family: "Titillium Web", "Segoe UI", system-ui, sans-serif; overflow: hidden; }
+  .num { font-variant-numeric: tabular-nums; }
+
+  /* ---------- topo ---------- */
+  header { display: flex; align-items: center; gap: 18px; height: 52px; padding: 0 16px;
+    background: linear-gradient(90deg, #15192a, #0f121b); border-bottom: 2px solid var(--destaque); }
+  .marca { font-weight: 900; letter-spacing: .5px; font-size: 18px; }
+  .marca b { color: var(--destaque); }
+  .chip { display: flex; flex-direction: column; line-height: 1.05; }
+  .chip small { color: var(--suave); font-size: 11px; text-transform: uppercase; letter-spacing: .8px; }
+  .chip span { font-size: 18px; font-weight: 700; }
+  .espaco { flex: 1; }
+  .conexao { display: flex; align-items: center; gap: 8px; color: var(--suave); font-size: 13px; }
+  .conexao i { width: 10px; height: 10px; border-radius: 50%; background: var(--vermelho); }
+  .conexao.ok i { background: var(--verde); box-shadow: 0 0 8px var(--verde); }
+  button.som { background: var(--painel2); color: var(--texto); border: 1px solid var(--linha);
+    border-radius: 8px; padding: 6px 10px; font: inherit; font-size: 13px; cursor: pointer; }
+  button.som.ativo { border-color: var(--verde); color: var(--verde); }
+  a.som.novo { display: inline-flex; align-items: center; padding: 6px 10px; border-radius: 6px; font-weight: 700;
+    border: 1px solid var(--verde); color: var(--verde); background: var(--painel2); text-decoration: none; font-size: 13px; }
+  a.som.novo[hidden] { display: none; }
+
+  .faixa-sc { display: none; height: 34px; align-items: center; justify-content: center; font-weight: 900;
+    font-size: 20px; letter-spacing: 2px; color: #111; background: var(--amarelo); }
+  .faixa-sc.on { display: flex; animation: pisca 1.2s infinite; }
+  @keyframes pisca { 50% { filter: brightness(.75); } }
+
+  /* ---------- janelas (histórico e configurações) ---------- */
+  .modal { position: fixed; inset: 0; background: rgba(5,7,12,.72); display: none; align-items: center;
+    justify-content: center; z-index: 50; padding: 16px; }
+  .modal.on { display: flex; }
+  .janela { background: var(--painel); border: 1px solid var(--linha); border-radius: 14px; width: min(980px, 100%);
+    max-height: 92vh; display: flex; flex-direction: column; overflow: hidden; }
+  .janela .topo-modal { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px;
+    border-bottom: 1px solid var(--linha); font-size: 16px; }
+  .janela .topo-modal button { background: none; border: 0; color: var(--suave); font-size: 20px; cursor: pointer; }
+  .janela .conteudo { overflow: auto; padding: 14px 16px 18px; }
+  .janela pre { white-space: pre-wrap; font-family: var(--mono); font-size: 12.5px; line-height: 1.45; margin: 0; }
+  .form-cfg fieldset { border: 1px solid var(--linha); border-radius: 10px; margin: 0 0 12px; padding: 10px 12px 12px; }
+  .form-cfg legend { color: var(--suave); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; padding: 0 6px; }
+  .form-cfg label { display: grid; grid-template-columns: 1fr 220px; align-items: center; gap: 10px; padding: 5px 0;
+    font-size: 13.5px; border-bottom: 1px solid #1a1f2c; }
+  .form-cfg label:last-child { border-bottom: 0; }
+  .form-cfg input[type=text], .form-cfg input[type=number], .form-cfg select { background: var(--painel2);
+    color: var(--texto); border: 1px solid var(--linha); border-radius: 6px; padding: 6px 8px; font: inherit; width: 100%; }
+  .form-cfg input[type=checkbox] { justify-self: start; width: 18px; height: 18px; accent-color: var(--destaque); }
+  .acoes-cfg { display: flex; gap: 10px; align-items: center; margin-top: 6px; }
+  .acoes-cfg button { background: var(--destaque); color: #fff; border: 0; border-radius: 8px; padding: 9px 18px;
+    font: inherit; font-weight: 700; cursor: pointer; }
+  .acoes-cfg span { color: var(--suave); font-size: 13px; }
+  table.hist { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.hist th { text-align: left; color: var(--suave); font-weight: 600; font-size: 11px; text-transform: uppercase;
+    letter-spacing: .8px; padding: 6px 8px; border-bottom: 1px solid var(--linha); }
+  table.hist td { padding: 7px 8px; border-bottom: 1px solid #1a1f2c; vertical-align: middle; }
+  table.hist button { background: var(--painel2); color: var(--texto); border: 1px solid var(--linha); border-radius: 6px;
+    padding: 4px 8px; font: inherit; font-size: 12px; cursor: pointer; margin: 1px 2px 1px 0; }
+  @media (max-width: 700px) { .form-cfg label { grid-template-columns: 1fr; } table.hist .opc { display: none; } }
+
+  /* ---------- grade principal ---------- */
+  main { display: grid; grid-template-columns: 330px 1fr 360px; gap: 10px; padding: 10px;
+    height: calc(100% - 52px); }
+  body.sc main { height: calc(100% - 86px); }
+  .caixa { background: var(--painel); border: 1px solid var(--linha); border-radius: 12px; overflow: hidden;
+    display: flex; flex-direction: column; min-height: 0; }
+  .caixa h2 { margin: 0; padding: 8px 12px; font-size: 12px; letter-spacing: 1.2px; text-transform: uppercase;
+    color: var(--suave); border-bottom: 1px solid var(--linha); display: flex; justify-content: space-between; }
+  .caixa h2 a { color: var(--azul); cursor: pointer; text-transform: none; letter-spacing: 0; }
+
+  /* ---------- torre de posições ---------- */
+  #torre { overflow-y: auto; flex: 1; }
+  .linha { display: grid; grid-template-columns: 30px 5px 1fr 78px 44px; align-items: center; gap: 8px;
+    height: 28px; padding: 0 10px 0 6px; border-bottom: 1px solid #1a1f2c; font-size: 15px; }
+  .linha .p { text-align: right; font-weight: 700; color: var(--suave); }
+  .linha .c { height: 18px; border-radius: 2px; }
+  .linha .n { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
+  .linha .d { text-align: right; font-family: var(--mono); font-size: 13px; color: var(--suave); }
+  .linha.eu { background: linear-gradient(90deg, rgba(225,6,0,.35), rgba(225,6,0,.08)); }
+  .linha.eu .p, .linha.eu .n, .linha.eu .d { color: #fff; }
+  .linha.fora { opacity: .4; }
+  .tag { font-size: 10px; font-weight: 700; padding: 1px 4px; border-radius: 3px; margin-left: 6px;
+    background: var(--azul); color: #000; vertical-align: middle; }
+  .pneu { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px;
+    border-radius: 50%; border: 3px solid; font-size: 11px; font-weight: 900; background: #0b0d12; }
+  .pneu-wrap { display: flex; align-items: center; gap: 4px; justify-content: flex-end; font-size: 11px;
+    color: var(--suave); font-family: var(--mono); }
+
+  /* ---------- centro ---------- */
+  .centro { display: grid; grid-template-rows: 1fr 210px; gap: 10px; min-height: 0; }
+  #mapa-caixa { position: relative; }
+  #mapa { width: 100%; height: 100%; display: block; background: #f2f3f5; }
+  .mapa-aviso { position: absolute; inset: 40px 0 0 0; display: flex; align-items: center; justify-content: center;
+    color: #5b616e; font-size: 15px; pointer-events: none; text-align: center; padding: 20px; }
+  .baixo { display: grid; grid-template-columns: 1fr 1.15fr; gap: 10px; min-height: 0; }
+  #radio { overflow-y: auto; flex: 1; padding: 6px 0; }
+  .msg { padding: 6px 12px; font-size: 14px; color: var(--suave); display: flex; gap: 10px; }
+  .msg time { font-family: var(--mono); font-size: 12px; color: var(--fraco); padding-top: 2px; }
+  .msg.nova { color: #fff; font-size: 17px; font-weight: 600; }
+  .msg.p3 { color: var(--amarelo); }
+  .msg.nova.p3 { color: var(--amarelo); }
+  table.voltas { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 13px; }
+  table.voltas th { color: var(--fraco); font-weight: 400; text-align: right; padding: 4px 5px; font-size: 11px; }
+  table.voltas td { text-align: right; padding: 3px 5px; border-top: 1px solid #1a1f2c; white-space: nowrap; }
+  table.voltas td:first-child, table.voltas th:first-child { text-align: left; }
+  .roxo { color: var(--roxo); font-weight: 700; } .verde { color: var(--verde); } .inv { color: var(--vermelho); text-decoration: line-through; }
+  .rolagem { overflow-y: auto; flex: 1; }
+
+  /* ---------- carro ---------- */
+  .carro { padding: 12px; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
+  .topo-carro { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
+  .grande { font-size: 76px; font-weight: 900; line-height: .9; text-align: center; }
+  .vel { font-size: 34px; font-weight: 700; } .vel small, .pos small { font-size: 13px; color: var(--suave); display: block; }
+  .pos { text-align: right; font-size: 34px; font-weight: 900; }
+  .rpm { height: 10px; background: var(--painel2); border-radius: 5px; overflow: hidden; }
+  .rpm div { height: 100%; width: 0; background: linear-gradient(90deg, var(--verde) 60%, var(--amarelo) 80%, var(--vermelho)); }
+  .pedais { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .pedal { height: 12px; background: var(--painel2); border-radius: 6px; overflow: hidden; }
+  .pedal div { height: 100%; width: 0; }
+  .rot { font-size: 11px; color: var(--suave); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;
+    display: flex; justify-content: space-between; }
+  .tempos { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; text-align: center; }
+  .tempos div { background: var(--painel2); border-radius: 8px; padding: 6px 4px; }
+  .tempos b { display: block; font-family: var(--mono); font-size: 16px; }
+  .tempos small { font-size: 10px; color: var(--suave); text-transform: uppercase; letter-spacing: 1px; }
+  .delta { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px; }
+  .delta-barra { position: relative; height: 14px; background: var(--painel2); border-radius: 7px; overflow: hidden; }
+  .delta-barra::after { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: #fff5; }
+  .delta-barra div { position: absolute; top: 0; bottom: 0; }
+  .delta b { font-family: var(--mono); font-size: 24px; min-width: 96px; text-align: right; }
+  .perguntas { display: flex; gap: 6px; padding: 8px 10px; border-bottom: 1px solid var(--linha); }
+  .perguntas button { flex: 1 1 0; min-width: 0; background: var(--painel2); color: var(--texto); border: 1px solid var(--linha);
+    border-radius: 8px; padding: 6px 2px; font: inherit; font-size: 12px; font-weight: 600; cursor: pointer; }
+  .perguntas button:active { background: var(--destaque); }
+  .pergunta-livre { display: flex; gap: 6px; padding: 0 10px 8px; border-bottom: 1px solid var(--linha); }
+  .pergunta-livre input { flex: 1; min-width: 0; background: var(--painel2); color: var(--texto); border: 1px solid var(--linha);
+    border-radius: 6px; padding: 7px 9px; font: inherit; font-size: 13px; }
+  .pergunta-livre button { background: var(--destaque); color: #fff; border: 0; border-radius: 6px; padding: 0 12px;
+    font: inherit; font-weight: 700; font-size: 12px; cursor: pointer; }
+  .setores { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+  .setores div { height: 8px; border-radius: 4px; background: var(--painel2); }
+  .pneus { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .roda { border-radius: 10px; padding: 8px 10px; background: var(--painel2); border-left: 6px solid var(--verde); }
+  .roda b { font-size: 26px; font-weight: 900; } .roda b small { font-size: 14px; }
+  .roda span { display: block; font-size: 12px; color: var(--suave); font-family: var(--mono); }
+  .info { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .info > div { background: var(--painel2); border-radius: 10px; padding: 8px 10px; }
+  .info b { font-size: 22px; font-weight: 700; display: block; }
+  .info small { font-size: 11px; color: var(--suave); text-transform: uppercase; letter-spacing: 1px; }
+  .barra { height: 8px; background: #0b0d12; border-radius: 4px; overflow: hidden; margin-top: 4px; }
+  .barra div { height: 100%; background: var(--amarelo); width: 0; }
+  .pecas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px 12px; }
+  .peca { font-size: 11px; color: var(--suave); white-space: nowrap; }
+  .peca div { display: flex; justify-content: space-between; }
+  .peca b { color: var(--texto); font-family: var(--mono); }
+  .peca i { display: block; height: 5px; border-radius: 3px; background: var(--painel2); margin-top: 3px; overflow: hidden; }
+  .peca i u { display: block; height: 100%; }
+  .espera { position: fixed; inset: 52px 0 0 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: rgba(11,13,18,.92); z-index: 10; text-align: center; gap: 10px; padding: 24px; }
+  .espera h1 { margin: 0; font-size: 28px; } .espera p { color: var(--suave); margin: 0; max-width: 520px; }
+  .espera.oculta { display: none; }
+  .espera .demo-botoes { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 14px; }
+  .espera .demo-botoes button { background: var(--destaque); color: #fff; border: 0; border-radius: 10px; padding: 11px 18px;
+    font: inherit; font-weight: 700; font-size: 15px; cursor: pointer; }
+  .espera .demo-botoes button.sec { background: var(--painel2); border: 1px solid var(--linha); }
+  .espera small { color: var(--fraco); }
+  .faixa-demo { display: none; height: 30px; align-items: center; justify-content: center; gap: 14px; font-weight: 700;
+    font-size: 14px; letter-spacing: 1px; color: #fff; background: #2b5fd9; }
+  .faixa-demo.on { display: flex; }
+  .faixa-demo button { background: rgba(0,0,0,.25); color: #fff; border: 1px solid rgba(255,255,255,.4); border-radius: 6px;
+    padding: 3px 10px; font: inherit; font-size: 12px; cursor: pointer; }
+  body.demo main { height: calc(100% - 82px); }
+
+  /* ---------- celular / tela estreita ---------- */
+  @media (max-width: 1100px) {
+    html, body { overflow: auto; height: auto; }
+    main { grid-template-columns: 1fr; height: auto; }
+    .centro { grid-template-rows: 340px auto; }
+    .baixo { grid-template-columns: 1fr; }
+    #radio, .rolagem { max-height: 260px; }
+    #torre { max-height: 420px; }
+    header { flex-wrap: wrap; height: auto; padding: 8px 12px; gap: 12px; }
+    .carro { order: -1; }
+  }
+</style>
+</head>
+<body>
+<div class="modal" id="modal"><div class="janela">
+  <div class="topo-modal"><b id="modal-titulo"></b><button id="modal-fechar" title="Fechar">✕</button></div>
+  <div class="conteudo" id="modal-conteudo"></div>
+</div></div>
+<header>
+  <div class="marca"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="vertical-align:-3px;margin-right:6px">
+    <path d="M4 13a8 8 0 0 1 16 0" fill="none" stroke="#e10600" stroke-width="2.4" stroke-linecap="round"/>
+    <rect x="2.5" y="12" width="4.5" height="7" rx="1.6" fill="#e10600"/><rect x="17" y="12" width="4.5" height="7" rx="1.6" fill="#e10600"/>
+    <path d="M19.2 19.5c0 1.6-2.2 2.5-5.2 2.5" fill="none" stroke="#e10600" stroke-width="1.8" stroke-linecap="round"/></svg>ENGENHEIRO</div>
+  <div class="chip"><small id="sessao-nome">Sessão</small><span id="pista">-</span></div>
+  <div class="chip"><small id="volta-rot">Volta</small><span class="num" id="volta">-</span></div>
+  <div class="chip"><small>Clima</small><span id="clima">-</span></div>
+  <div class="chip"><small>Pista / Ar</small><span class="num" id="temps">-</span></div>
+  <div class="espaco"></div>
+  <button class="som" id="btn-historico" title="Suas sessões gravadas: resumo, análise, relatório e acerto">📁 Histórico</button>
+  <button class="som" id="btn-config" title="Voz, microfone, avisos e seu nome">⚙ Configurações</button>
+  <button class="som" id="btn-som" title="Toca a voz do engenheiro neste aparelho (útil no celular com fone)">🔈 Ouvir rádio aqui</button>
+  <a class="som novo" id="btn-atualizar" target="_blank" rel="noopener" hidden></a>
+  <button class="som" id="btn-sobre" title="Sobre o Engenheiro">ⓘ</button>
+  <div class="conexao" id="conexao"><i></i><span>sem dados</span></div>
+</header>
+<div class="faixa-sc" id="faixa-sc">SAFETY CAR</div>
+<div class="faixa-demo" id="faixa-demo"><span id="demo-txt">DEMONSTRAÇÃO · dados simulados, nada é gravado</span>
+  <button id="btn-parar-demo">■ Parar demonstração</button></div>
+
+<main>
+  <section class="caixa">
+    <h2><span>Posições</span><a id="modo-dif">intervalo</a></h2>
+    <div id="torre"></div>
+  </section>
+
+  <div class="centro">
+    <section class="caixa" id="mapa-caixa">
+      <h2><span>Pista</span><span id="mapa-info"></span></h2>
+      <canvas id="mapa"></canvas>
+      <div class="mapa-aviso" id="mapa-aviso">O desenho da pista aparece sozinho em alguns segundos, conforme os carros andam.</div>
+    </section>
+    <div class="baixo">
+      <section class="caixa"><h2><span>Rádio</span><span>pergunte ao engenheiro</span></h2>
+        <div class="perguntas">
+          <button data-p="situacao">Situação</button><button data-p="pneus">Pneus</button>
+          <button data-p="estrategia">Estratégia</button><button data-p="repetir">Repetir</button>
+          <button data-p="ouvir" title="Aperte e fale do seu jeito: quanto falta pro Verstappen, o pneu aguenta até o fim...">🎤 Falar</button>
+        </div>
+        <form class="pergunta-livre" id="form-pergunta" autocomplete="off">
+          <input id="texto-pergunta" placeholder="Pergunte do seu jeito: quanto falta pro Verstappen?" maxlength="200">
+          <button type="submit">Enviar</button>
+        </form>
+        <div id="radio"></div></section>
+      <section class="caixa"><h2><span>Suas voltas</span></h2>
+        <div class="rolagem"><table class="voltas"><thead><tr><th>Volta</th><th>Tempo</th><th>S1</th><th>S2</th><th>S3</th><th></th></tr></thead><tbody id="voltas"></tbody></table></div>
+      </section>
+    </div>
+  </div>
+
+  <section class="caixa carro">
+    <div class="topo-carro">
+      <div class="vel num"><span id="vel">0</span><small>km/h</small></div>
+      <div class="grande num" id="marcha">N</div>
+      <div class="pos num"><span id="pos">-</span><small id="pos-de"></small></div>
+    </div>
+    <div class="rpm"><div id="rpm"></div></div>
+    <div class="pedais">
+      <div><div class="rot"><span>Acelerador</span><span id="acel-t">0%</span></div><div class="pedal"><div id="acel" style="background:var(--verde)"></div></div></div>
+      <div><div class="rot"><span>Freio</span><span id="freio-t">0%</span></div><div class="pedal"><div id="freio" style="background:var(--vermelho)"></div></div></div>
+    </div>
+    <div>
+      <div class="setores"><div id="st0"></div><div id="st1"></div><div id="st2"></div></div>
+    </div>
+    <div class="tempos">
+      <div><small>Atual</small><b id="t-atual">-</b></div>
+      <div><small>Última</small><b id="t-ultima">-</b></div>
+      <div><small>Melhor</small><b id="t-melhor">-</b></div>
+    </div>
+    <div>
+      <div class="rot"><span>Delta para a sua melhor volta</span><span></span></div>
+      <div class="delta"><div class="delta-barra"><div id="delta-b"></div></div><b class="num" id="delta">-</b></div>
+    </div>
+    <div>
+      <div class="rot"><span>Pneus</span><span id="pneu-nome"></span></div>
+      <div class="pneus">
+        <div class="roda" id="r2"><b>-</b><span></span></div>
+        <div class="roda" id="r3"><b>-</b><span></span></div>
+        <div class="roda" id="r0"><b>-</b><span></span></div>
+        <div class="roda" id="r1"><b>-</b><span></span></div>
+      </div>
+    </div>
+    <div class="info">
+      <div><small>Combustível</small><b class="num" id="comb">-</b><span id="comb-kg" style="font-size:12px;color:var(--suave)"></span></div>
+      <div><small>Bateria (ERS)</small><b class="num" id="ers">-</b><div class="barra"><div id="ers-b"></div></div>
+        <span id="aero" style="font-size:11px;font-weight:700;color:var(--suave)"></span></div>
+      <div><small>Paradas / Penal.</small><b class="num" id="paradas">-</b></div>
+      <div><small>Asa dianteira</small><b class="num" id="asa">-</b></div>
+    </div>
+    <div>
+      <div class="rot"><span>Unidade de potência e câmbio</span><span>desgaste</span></div>
+      <div class="pecas" id="pecas"><span class="peca">aguardando dados…</span></div>
+    </div>
+  </section>
+</main>
+
+<div class="espera" id="espera">
+  <h1>Aguardando o jogo…</h1>
+  <p>Deixe o engenheiro aberto e entre na pista no F1 25. No jogo, a telemetria UDP precisa estar ligada, com o IP deste computador e a porta 20777.</p>
+  <p>Enquanto isso, você pode mexer nas Configurações e no Histórico (no topo) ou ver como ele funciona:</p>
+  <div class="demo-botoes">
+    <button data-demo="corrida">▶ Demonstração: corrida</button>
+    <button class="sec" data-demo="classificacao">Classificação</button>
+    <button class="sec" data-demo="treino">Treino</button>
+  </div>
+  <small>A demonstração simula uma sessão curta, com voz e rádio de verdade. Nada é gravado no histórico.</small>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const PNEUS = {16:["S","#ff3b3b"],17:["M","#ffd23f"],18:["H","#f2f2f2"],7:["I","#20d070"],8:["W","#3aa0ff"],
+               19:["SS","#b34dff"],20:["S","#ff3b3b"],21:["M","#ffd23f"],22:["H","#f2f2f2"],15:["W","#3aa0ff"]};
+const NOME_PNEU_PT = {16:"macio",17:"médio",18:"duro",7:"intermediário",8:"chuva"};
+const NOME_PNEU_EN = {16:"soft",17:"medium",18:"hard",7:"intermediate",8:"wet"};
+// ---------- idioma (português / inglês): vem do engenheiro em /estado ----------
+let EN = false, idiomaAtual = null;
+const T = (pt, en) => EN ? en : pt;
+const DIC = {
+  "Sessão": "Session", "Volta": "Lap", "Clima": "Weather", "Pista / Ar": "Track / Air", "📁 Histórico": "📁 History",
+  "⚙ Configurações": "⚙ Settings", "🔈 Ouvir rádio aqui": "🔈 Play radio here", "sem dados": "no data",
+  "Posições": "Positions", "intervalo": "interval", "Pista": "Track",
+  "O desenho da pista aparece sozinho em alguns segundos, conforme os carros andam.": "The track map draws itself in a few seconds as the cars move.",
+  "Rádio": "Radio", "pergunte ao engenheiro": "ask the engineer", "Situação": "Situation", "Pneus": "Tyres",
+  "Estratégia": "Strategy", "Repetir": "Repeat", "🎤 Falar": "🎤 Talk", "Enviar": "Send", "Suas voltas": "Your laps",
+  "Tempo": "Time", "Acelerador": "Throttle", "Freio": "Brake", "Atual": "Current", "Última": "Last", "Melhor": "Best",
+  "Delta para a sua melhor volta": "Delta to your best lap", "Combustível": "Fuel", "Bateria (ERS)": "Battery (ERS)",
+  "Paradas / Penal.": "Stops / Pen.", "Asa dianteira": "Front wing", "Unidade de potência e câmbio": "Power unit and gearbox",
+  "desgaste": "wear", "aguardando dados…": "waiting for data…", "Aguardando o jogo…": "Waiting for the game…",
+  "Deixe o engenheiro aberto e entre na pista no F1 25. No jogo, a telemetria UDP precisa estar ligada, com o IP deste computador e a porta 20777.":
+    "Keep the engineer open and go on track in F1 25. In the game, UDP telemetry must be on, with this computer's IP and port 20777.",
+  // dicas (title) e campo de texto
+  "Suas sessões gravadas: resumo, análise, relatório e acerto": "Your recorded sessions: summary, analysis, report and setup",
+  "Voz, microfone, avisos e seu nome": "Voice, microphone, alerts and your name",
+  "Toca a voz do engenheiro neste aparelho (útil no celular com fone)": "Plays the engineer's voice on this device (handy on a phone with earbuds)",
+  "Aperte e fale do seu jeito: quanto falta pro Verstappen, o pneu aguenta até o fim...": "Press and just ask: what's the gap to Verstappen, will the tyres make it to the end...",
+  "Pergunte do seu jeito: quanto falta pro Verstappen?": "Ask anything: what's the gap to Verstappen?", "Fechar": "Close",
+  "Enquanto isso, você pode mexer nas Configurações e no Histórico (no topo) ou ver como ele funciona:":
+    "Meanwhile you can change the Settings and open the History (at the top) or see how it works:",
+  "▶ Demonstração: corrida": "▶ Demo: race", "Classificação": "Qualifying", "Treino": "Practice",
+  "A demonstração simula uma sessão curta, com voz e rádio de verdade. Nada é gravado no histórico.":
+    "The demo simulates a short session with the real voice and radio. Nothing is saved to the history.",
+  "DEMONSTRAÇÃO · dados simulados, nada é gravado": "DEMO · simulated data, nothing is saved",
+  "■ Parar demonstração": "■ Stop demo", "Sobre o Engenheiro": "About Engenheiro",
+};
+const ORIG = new WeakMap();
+function traduzirEstaticos() {
+  const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+  for (let n; (n = w.nextNode());) {
+    if (!ORIG.has(n)) { if (!DIC[n.nodeValue.trim()]) continue; ORIG.set(n, n.nodeValue); }
+    const o = ORIG.get(n), k = o.trim();
+    n.nodeValue = EN ? o.replace(k, DIC[k]) : o;
+  }
+  document.querySelectorAll("[title],[placeholder]").forEach(el => {
+    for (const at of ["title", "placeholder"]) {
+      if (!el.hasAttribute(at)) continue;
+      const chave = "pt_" + at;
+      if (!el.dataset[chave]) { if (!DIC[el.getAttribute(at)]) continue; el.dataset[chave] = el.getAttribute(at); }
+      el.setAttribute(at, EN ? DIC[el.dataset[chave]] : el.dataset[chave]);
+    }
+  });
+  document.documentElement.lang = EN ? "en" : "pt-BR";
+  $("modo-dif").textContent = modoLider ? T("para o líder", "to leader") : T("intervalo", "interval");
+  $("btn-som").textContent = somAtivo ? T("🔊 Rádio aqui: ligado", "🔊 Radio here: on") : T("🔈 Ouvir rádio aqui", "🔈 Play radio here");
+}
+function definirIdioma(lang) {
+  if (!lang || lang === idiomaAtual) return;
+  idiomaAtual = lang; EN = lang === "en";
+  traduzirEstaticos();
+}
+let modoLider = false, mapa = {versao: -1, pontos: []}, ultimoRadio = 0, somAtivo = false, filaAudio = [], tocando = false;
+let ultimoAudio = 0, estado = null;
+
+function tempo(ms) {
+  if (!ms || ms <= 0) return "-";
+  const m = Math.floor(ms / 60000), s = Math.floor((ms % 60000) / 1000), mi = ms % 1000;
+  return (m ? m + ":" + String(s).padStart(2, "0") : s) + "." + String(mi).padStart(3, "0");
+}
+function dif(ms) { return ms > 0 ? "+" + (ms / 1000).toFixed(ms < 10000 ? 3 : 1) : ""; }
+function corDesgaste(w) { return w < 30 ? "var(--verde)" : w < 50 ? "#b5e61d" : w < 65 ? "var(--laranja)" : "var(--vermelho)"; }
+function corTemp(t) { return t < 75 ? "var(--azul)" : t <= 108 ? "var(--verde)" : "var(--vermelho)"; }
+function pneuHtml(p, idade) {
+  const [l, c] = PNEUS[p] || ["?", "#666"];
+  return `<span class="pneu-wrap"><span class="pneu" style="border-color:${c};color:${c}">${l}</span>${idade ?? ""}</span>`;
+}
+function pneuLetra(nome) {
+  const m = {"macio": 16, "médio": 17, "duro": 18, "intermediário": 7, "chuva": 8,
+             "soft": 16, "medium": 17, "hard": 18, "intermediate": 7, "wet": 8}[nome];
+  const [l, c] = PNEUS[m] || ["?", "#666"];
+  return `<b style="color:${c}">${l}</b>`;
+}
+function esc(t) { return String(t).replace(/[&<>"]/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch])); }
+
+$("modo-dif").onclick = () => { modoLider = !modoLider; $("modo-dif").textContent = modoLider ? T("para o líder", "to leader") : T("intervalo", "interval"); };
+$("btn-som").onclick = () => {
+  somAtivo = !somAtivo;
+  $("btn-som").classList.toggle("ativo", somAtivo);
+  $("btn-som").textContent = somAtivo ? T("🔊 Rádio aqui: ligado", "🔊 Radio here: on") : T("🔈 Ouvir rádio aqui", "🔈 Play radio here");
+  if (somAtivo) { ultimoAudio = ultimoRadio; new Audio().play().catch(() => {}); }
+};
+
+document.querySelectorAll(".perguntas button").forEach(b =>
+  b.onclick = () => fetch("/perguntar/" + b.dataset.p, {method: "POST"}).catch(() => {}));
+// ---------- janelas: histórico e configurações ----------
+function abrirModal(titulo, html) { $("modal-titulo").textContent = titulo; $("modal-conteudo").innerHTML = html; $("modal").classList.add("on"); }
+$("modal-fechar").onclick = () => $("modal").classList.remove("on");
+$("modal").onclick = ev => { if (ev.target.id === "modal") $("modal").classList.remove("on"); };
+document.addEventListener("keydown", ev => { if (ev.key === "Escape") $("modal").classList.remove("on"); });
+
+const ROTULOS_AVISOS = {
+  tempo_de_volta_treino_classificacao: ["Falar o tempo de cada volta no treino e na classificação", "Call every lap time in practice and qualifying"],
+  tempo_de_volta_corrida: ["Falar o tempo de cada volta na corrida", "Call every lap time in the race"],
+  posicao_e_diferencas_a_cada_voltas: ["Posição e diferenças a cada quantas voltas (0 = nunca)", "Position and gaps every how many laps (0 = never)"],
+  carro_de_tras_perto_segundos: ["Avisar carro de trás a menos de (segundos)", "Warn when the car behind is within (seconds)"],
+  desgaste_pneus_alertas: ["Avisos de desgaste dos pneus (%)", "Tyre wear alerts (%)"],
+  pecas_motor_alertas: ["Avisos de desgaste das peças do motor (%)", "Power unit wear alerts (%)"],
+  janela_de_parada: ["Janela de parada da estratégia do jogo", "Pit window from the game's strategy"],
+  combustivel: ["Combustível", "Fuel"], clima: ["Clima e previsão", "Weather and forecast"],
+  comparar_pneus_chuva_seco: ["Comparar ritmo chuva x seco", "Compare wet vs dry tyre pace"],
+  classificacao_minutos_finais: ["Classificação: avisar nos minutos finais", "Qualifying: warn in the final minutes"],
+  classificacao_zona_de_corte: ["Classificação: zona de corte", "Qualifying: drop zone"], safety_car: ["Safety Car", "Safety Car"],
+  dano_asa_dianteira_percentual: ["Avisar dano na asa a partir de (%)", "Warn about wing damage from (%)"],
+  penalidades: ["Penalidades e advertências", "Penalties and warnings"],
+  ultimas_voltas: ["Últimas voltas", "Final laps"],
+  temperatura_pneu_alta_celsius: ["Pneu quente a partir de (°C, 0 = automático)", "Hot tyre from (°C, 0 = automatic)"],
+  delta_por_setor_classificacao: ["Classificação: diferença em cada setor", "Qualifying: delta in each sector"],
+  pits_dos_rivais: ["Paradas dos rivais", "Rival pit stops"],
+  lembrar_acertos_anteriores: ["Lembrar o acerto da última vez na pista", "Remind me of my last setup at this track"],
+  abandonos_e_incidentes: ["Abandonos, toques e dano na asa dos rivais", "Retirements, contact and rival wing damage"],
+  carros_lentos: ["Carros lentos ou parados e quem perdeu tempo", "Slow or stopped cars and who lost time"],
+  estrategia_rivais: ["Estratégia dos rivais (paradas, undercut e overcut)", "Rival strategy (stops, undercut and overcut)"],
+};
+function campo(nome, rotulo, valor, tipo, opcoes) {
+  const id = "cfg-" + nome;
+  let ctl;
+  if (tipo === "bool") ctl = `<input type="checkbox" id="${id}" data-k="${nome}" ${valor ? "checked" : ""}>`;
+  else if (tipo === "select") ctl = `<select id="${id}" data-k="${nome}">${opcoes.map(([v, t]) => `<option value="${esc(v)}" ${String(v) === String(valor) ? "selected" : ""}>${esc(t)}</option>`).join("")}</select>`;
+  else ctl = `<input type="${tipo === "num" ? "number" : "text"}" step="any" id="${id}" data-k="${nome}" value="${esc(Array.isArray(valor) ? valor.join(", ") : valor ?? "")}">`;
+  return `<label><span>${esc(rotulo)}</span>${ctl}</label>`;
+}
+async function abrirConfig() {
+  let d; try { d = await (await fetch("/config")).json(); } catch (e) { return; }
+  const c = d.cfg, a = c.avisos || {};
+  definirIdioma(c.idioma || "pt");
+  const vozes = (EN ? (d.vozes_en || []) : d.vozes).map(([v, t]) => [v, t]);
+  let palavra = c.microfone_palavra_ativacao || "";       // a palavra padrão acompanha o idioma
+  if (EN && palavra === "engenheiro") palavra = "engineer";
+  if (!EN && palavra === "engineer") palavra = "engenheiro";
+  const campoVoz = EN ? campo("voz_neural_en", "Voice", c.voz_neural_en, "select", vozes)
+                      : campo("voz_neural", "Voz", c.voz_neural, "select", vozes);
+  const html = `<form class="form-cfg" id="form-cfg">
+    <fieldset><legend>${T("Idioma", "Language")}</legend>
+      ${campo("idioma", T("Idioma do engenheiro (voz, rádio, painel, análises e microfone)", "Engineer language (voice, radio, dashboard, analysis and microphone)"), c.idioma || "pt", "select", [["pt", "Português (Brasil)"], ["en", "English"]])}
+    </fieldset>
+    <fieldset><legend>${T("Piloto", "Driver")}</legend>
+      ${campo("nome_piloto", T("Seu nome (o engenheiro fala de vez em quando)", "Your name (the engineer uses it now and then)"), c.nome_piloto, "text")}
+      ${campo("rivais", T("Seus rivais (sobrenomes separados por vírgula; o companheiro de equipe já entra)", "Your rivals (surnames separated by commas; your teammate is included)"), c.rivais || "", "text")}
+      ${campo("distancia_corrida_pct", T("Distância das corridas", "Race distance"), c.distancia_corrida_pct, "select", [[25, "25%"], [35, "35%"], [50, "50%"], [100, "100%"]])}
+    </fieldset>
+    <fieldset><legend>${T("Voz do engenheiro", "Engineer voice")}</legend>
+      ${campo("voz_ativada", T("Voz ligada", "Voice on"), c.voz_ativada, "bool")}
+      ${campoVoz}
+      ${campo("voz_velocidade_neural", T("Velocidade da fala", "Speech speed"), c.voz_velocidade_neural, "select", [["-10%", T("Mais devagar", "Slower")], ["+0%", "Normal"], ["+8%", T("Um pouco rápida", "A little fast")], ["+15%", T("Rápida", "Fast")], ["+22%", T("Bem rápida", "Very fast")]])}
+      ${campo("voz_efeito_radio", T("Efeito de rádio", "Radio effect"), c.voz_efeito_radio, "bool")}
+      ${campo("voz_no_notebook", T("Tocar a voz no notebook", "Play the voice on this computer"), c.voz_no_notebook, "bool")}
+    </fieldset>
+    <fieldset><legend>${T("Microfone", "Microphone")}</legend>
+      ${campo("microfone", T("Microfone ligado", "Microphone on"), c.microfone, "bool")}
+      ${campo("microfone_palavra_ativacao", T("Palavra para chamar o engenheiro", "Wake word to call the engineer"), palavra, "text")}
+      ${campo("microfone_som_escuta", T("Bip de confirmação quando ele te ouvir (como na F1)", "Confirmation beep when he hears you (like in F1)"), c.microfone_som_escuta !== false, "bool")}
+      ${campo("microfone_frases", T("Reconhecimento de frases", "Speech recognition"), c.microfone_frases, "select", [["whisper-small", T("Whisper (entende melhor)", "Whisper (understands best)")], ["whisper-base", T("Whisper leve (notebook mais fraco)", "Whisper light (slower computers)")], ["vosk", T("Básico (mais leve, entende menos)", "Basic (lightest, understands less)")]])}
+    </fieldset>
+    <fieldset><legend>${T("Avisos", "Alerts")}</legend>
+      ${Object.keys(ROTULOS_AVISOS).filter(k => k in a).map(k => campo("av." + k, T(...ROTULOS_AVISOS[k]), a[k],
+        typeof a[k] === "boolean" ? "bool" : Array.isArray(a[k]) ? "text" : "num")).join("")}
+    </fieldset>
+    <fieldset><legend>${T("Conexão", "Connection")}</legend>
+      ${campo("porta", T("Porta UDP (a mesma do PS5)", "UDP port (same as in the game)"), c.porta, "num")}
+      ${campo("porta_painel", T("Porta do painel", "Dashboard port"), c.porta_painel, "num")}
+      ${campo("abrir_painel_automaticamente", T("Abrir o painel ao iniciar", "Open the dashboard on start"), c.abrir_painel_automaticamente, "bool")}
+      ${campo("verificar_atualizacoes", T("Avisar quando houver versão nova (consulta o GitHub ao abrir)", "Tell me when a new version is out (checks GitHub on start)"), c.verificar_atualizacoes !== false, "bool")}
+      ${campo("painel_no_celular", T("Permitir abrir o painel no celular (outros aparelhos da rede)", "Allow opening the dashboard on your phone (other devices on the network)"), c.painel_no_celular !== false, "bool")}
+    </fieldset>
+    <div class="acoes-cfg"><button type="submit">${T("Salvar", "Save")}</button><span id="cfg-msg"></span>
+      <span style="flex:1"></span><button type="button" id="btn-sair" style="background:var(--painel2);border:1px solid var(--linha)">${T("Fechar o engenheiro", "Close the engineer")}</button></div>
+  </form>`;
+  abrirModal(T("Configurações", "Settings"), html);
+  $("btn-sair").onclick = async () => {
+    if (!confirm(T("Fechar o engenheiro? A sessão é salva antes.", "Close the engineer? The session is saved first."))) return;
+    try { await fetch("/sair", {method: "POST"}); } catch (e) {}
+    document.body.innerHTML = `<div style="display:flex;height:100%;align-items:center;justify-content:center;color:#9aa3b5;font-size:18px">${T("Engenheiro encerrado. Pode fechar esta janela.", "Engineer closed. You can close this window.")}</div>`;
+    setTimeout(() => window.close(), 800);
+  };
+  $("form-cfg").onsubmit = async ev => {
+    ev.preventDefault();
+    const novo = {avisos: {}};
+    document.querySelectorAll("#form-cfg [data-k]").forEach(el => {
+      const v = el.type === "checkbox" ? el.checked : el.value;
+      const k = el.dataset.k;
+      if (k.startsWith("av.")) novo.avisos[k.slice(3)] = v; else novo[k] = v;
+    });
+    try {
+      const r = await (await fetch("/config", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(novo)})).json();
+      if (novo.idioma) definirIdioma(novo.idioma);
+      $("cfg-msg").textContent = !r.ok ? T("Não consegui salvar: ", "Could not save: ") + (r.erro || "") :
+        r.reiniciar && r.reiniciar.length ? T("Salvo. Algumas mudanças valem depois de fechar e abrir o engenheiro.",
+                                              "Saved. Some changes apply after closing and reopening the engineer.") : T("Salvo.", "Saved.");
+      if (r.ok && r.reiniciar && r.reiniciar.includes("idioma")) setTimeout(abrirConfig, 1500);
+    } catch (e) { $("cfg-msg").textContent = T("Não consegui salvar.", "Could not save."); }
+  };
+}
+async function abrirHistorico() {
+  let lista; try { lista = await (await fetch("/sessoes")).json(); } catch (e) { return; }
+  if (!lista.length) { abrirModal(T("Histórico", "History"), `<p>${T("Nenhuma sessão gravada ainda.", "No recorded sessions yet.")}</p>`); return; }
+  const loc = EN ? "en-GB" : "pt-BR";
+  const data = s => { try { const d = new Date(s); return d.toLocaleDateString(loc) + " " + d.toLocaleTimeString(loc, {hour: "2-digit", minute: "2-digit"}); } catch (e) { return ""; } };
+  const nomes = EN ? {"resumo.txt": "Summary", "analise.txt": "Analysis", "relatorio.html": "Report", "radio.csv": "Radio"}
+                   : {"resumo.txt": "Resumo", "analise.txt": "Análise", "relatorio.html": "Relatório", "radio.csv": "Rádio"};
+  const linhas = lista.map(x => {
+    const ac = x.acerto && x.acerto.frontWing != null ? `${T("asas", "wings")} ${x.acerto.frontWing}/${x.acerto.rearWing}, ${T("dif.", "diff.")} ${x.acerto.onThrottle}%` : "";
+    const res = x.posicao ? `P${x.posicao}${x.largada ? T(" (largou P", " (started P") + x.largada + ")" : ""}` : "";
+    const bt = (x.arquivos || []).map(a => `<button data-p="${esc(x.pasta)}" data-a="${a}">${nomes[a]}</button>`).join("");
+    return `<tr><td>${esc(data(x.inicio))}</td><td><b>${esc(x.pista || x.pasta)}</b><br><small style="color:var(--suave)">${esc(x.sessao || "")}</small></td>
+      <td>${esc(res)}</td><td class="num">${esc(x.melhor || "")}</td><td class="opc">${esc(ac)}</td><td>${bt}</td></tr>`;
+  }).join("");
+  abrirModal(T("Histórico", "History"), `<table class="hist"><thead><tr><th>${T("Data", "Date")}</th><th>${T("Sessão", "Session")}</th><th>${T("Resultado", "Result")}</th><th>${T("Melhor volta", "Best lap")}</th><th class="opc">${T("Acerto", "Setup")}</th><th></th></tr></thead><tbody>${linhas}</tbody></table>`);
+  document.querySelectorAll("table.hist button").forEach(b => b.onclick = async () => {
+    const url = "/sessoes/" + encodeURIComponent(b.dataset.p) + "/" + b.dataset.a;
+    if (b.dataset.a.endsWith(".html")) { window.open(url, "_blank"); return; }
+    let txt = ""; try { txt = await (await fetch(url)).text(); } catch (e) {}
+    if (b.dataset.a === "radio.csv") txt = txt.replace(/^\uFEFF/, "").split("\n").slice(1).map(l => { const p = l.split(";"); return p.length > 3 ? `${p[0]}  V${p[1]}  ${p.slice(3).join(";")}` : ""; }).join("\n");
+    abrirModal(nomes[b.dataset.a] + " — " + b.dataset.p, `<pre>${esc(txt)}</pre>`);
+  });
+}
+$("btn-config").onclick = abrirConfig;
+if (new URLSearchParams(location.search).get("app") === "1") {   // janela do executável: sinal de vida
+  const sinal = () => fetch("/vivo").catch(() => {});
+  sinal(); setInterval(sinal, 3000);
+}
+$("btn-historico").onclick = abrirHistorico;
+
+// ---------- sobre ----------
+async function abrirSobre() {
+  let d; try { d = await (await fetch("/config")).json(); } catch (e) { return; }
+  const s = d.sobre || {};
+  const L = par => Array.isArray(par) ? T(par[0], par[1]) : (par || "");
+  const link = (url, txt) => url ? `<a href="${esc(url)}" target="_blank" style="color:var(--azul)">${esc(txt || url)}</a>` : "";
+  const terceiros = (s.terceiros || []).map(([n, lic, uso]) => `<tr><td>${esc(n)}</td><td>${esc(lic)}</td><td style="color:var(--suave)">${esc(L(uso))}</td></tr>`).join("");
+  abrirModal(T("Sobre", "About"), `<div style="line-height:1.55">
+    <h2 style="margin:0 0 2px;font-size:26px">${esc(s.nome || "Engenheiro")} <small style="color:var(--suave);font-size:14px">v${esc(s.versao || "")}</small></h2>
+    <p style="margin:0 0 12px;color:var(--suave)">${esc(L(s.subtitulo))}</p>
+    <p style="margin:0 0 4px">${T("Criado por", "Created by")} <b>${esc(s.autor || "")}</b>${s.github ? " · " + link(s.github, "GitHub") : ""}</p>
+    <p style="margin:0 0 12px;color:var(--suave)">${T("Feito com a ajuda do Claude (Anthropic).", "Built with the help of Claude (Anthropic).")}</p>
+    ${s.atualizacao ? `<p style="margin:0 0 12px;color:var(--verde)"><b>${T("Versão nova disponível:", "New version available:")}</b> ${link(s.atualizacao.link, "v" + s.atualizacao.versao)}</p>` : ""}
+    ${s.doacao ? `<p style="margin:0 0 12px">${T("Gostou? Apoie o projeto:", "Enjoying it? Support the project:")} ${link(s.doacao)}</p>` : ""}
+    <p style="margin:0 0 14px;padding:10px 12px;background:var(--painel2);border-radius:8px;font-size:13px">${esc(L(s.aviso))}</p>
+    <b style="font-size:12px;letter-spacing:1px;color:var(--suave)">${T("SOFTWARE E DADOS DE TERCEIROS", "THIRD-PARTY SOFTWARE AND DATA")}</b>
+    <table class="hist" style="margin-top:6px"><tbody>${terceiros}</tbody></table></div>`);
+}
+$("btn-sobre").onclick = abrirSobre;
+
+// ---------- boas-vindas (primeira vez) ----------
+async function boasVindas(forcar) {
+  let d; try { d = await (await fetch("/config")).json(); } catch (e) { return; }
+  const c = d.cfg;
+  if (!c._novo && !forcar) return;
+  let lang = c.idioma || "pt";
+  const langInicial = lang;
+  const desenhar = () => {
+    definirIdioma(lang);
+    abrirModal(T("Bem-vindo ao Engenheiro", "Welcome to Engenheiro"), `<form class="form-cfg" id="form-bv">
+      <p style="margin:0 0 12px;color:var(--suave)">${T("Um engenheiro de corrida que fala com você pelo rádio durante as sessões do F1 25. Três passos rápidos:",
+        "A race engineer that talks to you over the radio during your F1 25 sessions. Three quick steps:")}</p>
+      <fieldset><legend>1 · ${T("Idioma e nome", "Language and name")}</legend>
+        ${campo("idioma", T("Idioma", "Language"), lang, "select", [["en", "English"], ["pt", "Português (Brasil)"]])}
+        ${campo("nome_piloto", T("Seu nome (opcional, ele usa de vez em quando)", "Your name (optional, he uses it now and then)"), c.nome_piloto || "", "text")}
+      </fieldset>
+      <fieldset><legend>2 · ${T("No jogo", "In the game")}</legend>
+        <p style="margin:4px 0;font-size:14px;line-height:1.6">F1 25 &gt; ${T("Configurações &gt; Configurações de telemetria", "Settings &gt; Telemetry Settings")}:<br>
+        ${T("Telemetria UDP", "UDP Telemetry")}: <b>${T("Sim", "On")}</b> · ${T("Transmissão", "Broadcast Mode")}: <b>${T("Não", "Off")}</b><br>
+        ${T("Endereço IP", "IP Address")}: <b>${esc(d.ip || "?")}</b> <span style="color:var(--suave)">(${T("jogando neste PC? use 127.0.0.1", "playing on this PC? use 127.0.0.1")})</span><br>
+        ${T("Porta", "Port")}: <b>${esc(c.porta)}</b> · ${T("Frequência", "Send Rate")}: <b>20 Hz</b> · ${T("Formato", "Format")}: <b>2025</b> ${T("ou", "or")} <b>2026</b><br>
+        <span style="color:var(--suave)">${T("Se o Windows perguntar, permita o Engenheiro em \"Redes privadas\".", "If Windows asks, allow Engenheiro on \"Private networks\".")}</span></p>
+      </fieldset>
+      <fieldset><legend>3 · ${T("Microfone", "Microphone")}</legend>
+        ${campo("microfone", T("Falar com o engenheiro: diga \"Engenheiro\" e a pergunta", "Talk to the engineer: say \"Engineer\" and your question"), c.microfone, "bool")}
+      </fieldset>
+      <p id="bv-msg" style="color:var(--suave);font-size:13px;margin:6px 0"></p>
+      <div class="acoes-cfg"><button type="button" id="bv-demo">▶ ${T("Ver uma demonstração", "Try a demo")}</button>
+        <button type="submit" style="background:var(--painel2);border:1px solid var(--linha)">${T("Pronto", "Done")}</button></div>
+    </form>`);
+    $("cfg-idioma").onchange = ev => { lang = ev.target.value; desenhar(); };
+    if (lang !== langInicial) $("bv-msg").textContent = T("O microfone muda de idioma depois de fechar e abrir o app.",
+                                                        "The microphone switches language after you close and reopen the app.");
+    const salvar = async () => {
+      const novo = {_concluir: true, idioma: lang, nome_piloto: $("cfg-nome_piloto").value, microfone: $("cfg-microfone").checked};
+      try { await fetch("/config", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(novo)}); } catch (e) {}
+      $("modal").classList.remove("on");
+    };
+    $("form-bv").onsubmit = async ev => { ev.preventDefault(); await salvar(); };
+    $("bv-demo").onclick = async () => { await salvar(); fetch("/demo/iniciar?cenario=corrida", {method: "POST"}).catch(() => {}); };
+  };
+  desenhar();
+}
+boasVindas(false);
+document.querySelectorAll("[data-demo]").forEach(b => b.onclick = async () => {
+  try {
+    const r = await (await fetch("/demo/iniciar?cenario=" + b.dataset.demo, {method: "POST"})).json();
+    if (!r.ok && r.erro) alert(r.erro);
+  } catch (e) {}
+});
+$("btn-parar-demo").onclick = () => fetch("/demo/parar", {method: "POST"}).catch(() => {});
+
+$("form-pergunta").onsubmit = ev => {
+  ev.preventDefault();
+  const t = $("texto-pergunta").value.trim();
+  if (!t) return;
+  $("texto-pergunta").value = "";
+  fetch("/perguntar_texto", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({texto: t})}).catch(() => {});
+};
+
+function tocarProximo() {
+  if (tocando || !filaAudio.length) return;
+  tocando = true;
+  const a = new Audio("/audio/" + filaAudio.shift() + ".wav");
+  a.onended = a.onerror = () => { tocando = false; tocarProximo(); };
+  a.play().catch(() => { tocando = false; });
+}
+
+function torre(d) {
+  const cat = d.sessao.categoria;
+  const html = d.carros.map(c => {
+    let gap;
+    if (cat === "corrida") gap = c.pos === 1 ? T("Líder", "Leader") : dif(modoLider ? c.dif_lider : c.dif);
+    else gap = c.pos === 1 ? tempo(c.melhor) : (c.melhor ? dif(c.dif) : T("sem tempo", "no time"));
+    const tag = c.pit ? '<span class="tag">PIT</span>' : (c.resultado === 3 ? '<span class="tag" style="background:#fff">🏁</span>' : "");
+    const fora = c.resultado >= 4 ? " fora" : "";
+    return `<div class="linha${c.eu ? " eu" : ""}${fora}"><span class="p num">${c.pos}</span>
+      <span class="c" style="background:${c.cor}"></span><span class="n">${esc(c.nome)}${tag}</span>
+      <span class="d num">${gap}</span>${pneuHtml(c.pneu, c.idade)}</div>`;
+  }).join("");
+  $("torre").innerHTML = html;
+}
+
+function radio(lista) {
+  if (!lista.length) return;
+  const ult = lista[lista.length - 1].id;
+  if (somAtivo) lista.filter(m => m.audio && m.id > ultimoAudio).forEach(m => { filaAudio.push(m.id); ultimoAudio = m.id; });
+  tocarProximo();
+  if (ult === ultimoRadio && !lista.some(m => m.audio && m.id > ultimoAudio)) return;
+  ultimoRadio = ult;
+  $("radio").innerHTML = lista.slice().reverse().map((m, i) =>
+    `<div class="msg${i === 0 ? " nova" : ""}${m.prio >= 3 ? " p3" : ""}"><time>${m.hora.slice(0, 5)}</time><span>${esc(m.texto)}</span></div>`).join("");
+}
+
+function voltas(d) {
+  const ms = d.melhores_sessao || [], eu = d.eu.melhores_setores || [];
+  const cls = (v, k) => !v ? "" : (ms[k] && v <= ms[k]) ? "roxo" : (eu[k] && v <= eu[k]) ? "verde" : "";
+  $("voltas").innerHTML = d.voltas.slice().reverse().map(v => {
+    const inv = !v.valida ? "inv" : (v.tempo_ms === d.eu.melhor ? (v.tempo_ms <= (ms[3] || 1e12) ? "roxo" : "verde") : "");
+    return `<tr><td>${v.volta}${v.teve_pit ? " P" : ""}</td><td class="${inv}">${v.tempo}</td>
+      <td class="${v.valida ? cls(v.s1_ms, 0) : ""}">${tempo(v.s1_ms)}</td><td class="${v.valida ? cls(v.s2_ms, 1) : ""}">${tempo(v.s2_ms)}</td>
+      <td class="${v.valida ? cls(v.s3_ms, 2) : ""}">${tempo(v.s3_ms)}</td><td>${pneuLetra(v.pneu)}</td></tr>`;
+  }).join("");
+}
+
+function carro(d) {
+  const e = d.eu, total = d.carros.length;
+  $("vel").textContent = e.vel ?? 0;
+  $("marcha").textContent = e.marcha === -1 ? "R" : (e.marcha ? e.marcha : "N");
+  $("pos").textContent = e.pos ? "P" + e.pos : "-";
+  $("pos-de").textContent = total ? T("de ", "of ") + total : "";
+  $("rpm").style.width = Math.min(100, (e.rpm || 0) / (e.rpm_max || 13000) * 100) + "%";
+  $("acel").style.width = (e.acel || 0) * 100 + "%"; $("acel-t").textContent = Math.round((e.acel || 0) * 100) + "%";
+  $("freio").style.width = (e.freio || 0) * 100 + "%"; $("freio-t").textContent = Math.round((e.freio || 0) * 100) + "%";
+  $("t-atual").textContent = tempo(e.tempo_volta);
+  $("t-atual").style.color = e.invalida ? "var(--vermelho)" : "";
+  const ult = d.voltas.length ? d.voltas[d.voltas.length - 1] : null;
+  $("t-ultima").textContent = ult ? ult.tempo : "-";
+  $("t-melhor").textContent = tempo(e.melhor);
+  const ms = d.melhores_sessao || [], best = e.melhores_setores || [];
+  [e.s1, e.s2].forEach((v, k) => {
+    let c = "var(--painel2)";
+    if (e.setor > k && v) c = (ms[k] && v <= ms[k]) ? "var(--roxo)" : (best[k] && v <= best[k]) ? "var(--verde)" : "var(--amarelo)";
+    $("st" + k).style.background = c;
+  });
+  $("st2").style.background = "var(--painel2)";
+  const dl = e.delta;
+  if (dl === null || dl === undefined) { $("delta").textContent = "-"; $("delta").style.color = ""; $("delta-b").style.width = "0"; }
+  else {
+    const sgs = dl / 1000, larg = Math.min(50, Math.abs(sgs) / 1.0 * 50);
+    $("delta").textContent = (sgs > 0 ? "+" : "") + sgs.toFixed(3);
+    $("delta").style.color = sgs <= 0 ? "var(--verde)" : "var(--vermelho)";
+    const b = $("delta-b"); b.style.width = larg + "%"; b.style.background = sgs <= 0 ? "var(--verde)" : "var(--vermelho)";
+    b.style.left = sgs <= 0 ? (50 - larg) + "%" : "50%";
+  }
+  $("pneu-nome").textContent = ((EN ? NOME_PNEU_EN : NOME_PNEU_PT)[e.pneu] || "") + (e.idade !== undefined ? " · " + e.idade + (e.idade === 1 ? T(" volta", " lap") : T(" voltas", " laps")) : "");
+  for (let k = 0; k < 4; k++) {
+    const w = (e.desgaste || [])[k] || 0, ts = (e.temp_sup || [])[k], ti = (e.temp_int || [])[k];
+    const r = $("r" + k);
+    r.style.borderLeftColor = corDesgaste(w);
+    r.querySelector("b").innerHTML = Math.round(w) + "<small>%</small>";
+    r.querySelector("span").innerHTML = ts !== undefined ? `<span style="color:${corTemp(ts)};display:inline">${ts}°</span> ${T("sup", "surf")} · ${ti}° int` : "";
+  }
+  const s = e.comb_sobra;
+  $("comb").textContent = (s > 0 ? "+" : "") + (s ?? 0).toFixed(1) + T(" v", " laps");
+  $("comb").style.color = s < -0.2 ? "var(--vermelho)" : s > 1 ? "var(--azul)" : "var(--verde)";
+  $("comb-kg").textContent = (e.comb ?? 0) + T(" kg no tanque", " kg in the tank");
+  $("ers").textContent = (e.ers ?? 0) + "%"; $("ers-b").style.width = Math.max(0, Math.min(100, e.ers || 0)) + "%";
+  const ot = e.overtake === "ativo" ? `<span style="color:#22c77a">${T("OVERTAKE ATIVO", "OVERTAKE ACTIVE")}</span>`
+    : e.overtake === "disponivel" ? `<span style="color:#7fe0ab">${T("OVERTAKE DISPONÍVEL", "OVERTAKE AVAILABLE")}</span>` : "";
+  const aero = e.aero === "straight" ? T("MODO RETA", "STRAIGHT MODE") : e.aero === "curva" ? T("MODO CURVA", "CORNER MODE") : "";
+  $("aero").innerHTML = [aero, ot].filter(x => x).join(" · ");
+  $("paradas").textContent = (e.paradas ?? 0) + " / " + (e.penalidades ? e.penalidades + "s" : "0");
+  const asa = (e.dano && e.dano.asa_dianteira) || 0;
+  $("asa").textContent = asa + "%"; $("asa").style.color = asa >= 25 ? "var(--vermelho)" : asa > 0 ? "var(--amarelo)" : "";
+}
+
+function pecas(p) {
+  if (!p || !Object.keys(p).length) return;
+  const cor = v => v >= 70 ? "var(--vermelho)" : v >= 50 ? "var(--amarelo)" : "var(--verde)";
+  $("pecas").innerHTML = Object.entries(p).map(([n, v]) =>
+    `<div class="peca"><div><span>${esc(n)}</span><b style="color:${cor(v)}">${v}%</b></div><i><u style="width:${v}%;background:${cor(v)}"></u></i></div>`).join("");
+}
+
+function topo(d) {
+  const s = d.sessao;
+  $("sessao-nome").textContent = s.nome; $("pista").textContent = s.pista;
+  if (s.categoria === "corrida" && s.total) { $("volta-rot").textContent = T("Volta", "Lap"); $("volta").textContent = Math.min(s.volta, s.total) + " / " + s.total; }
+  else { $("volta-rot").textContent = T("Tempo restante", "Time left"); const r = s.restante || 0; $("volta").textContent = Math.floor(r / 60) + ":" + String(r % 60).padStart(2, "0"); }
+  $("clima").textContent = s.clima; $("clima").style.color = s.clima_id >= 3 ? "var(--azul)" : "";
+  $("temps").textContent = s.temp_pista + "° / " + s.temp_ar + "°";
+  const sc = s.sc === 1 ? "SAFETY CAR" : s.sc === 2 ? T("SAFETY CAR VIRTUAL", "VIRTUAL SAFETY CAR") : "";
+  $("faixa-sc").textContent = sc; $("faixa-sc").classList.toggle("on", !!sc); document.body.classList.toggle("sc", !!sc);
+}
+
+// ---------- mapa (estilo do mapa oficial da F1) ----------
+const cv = $("mapa"), ctx = cv.getContext("2d");
+const COR_SETOR = ["#E6007E", "#FFD100", "#2F8CFF"];
+const TINTA = "#15161c", FUNDO_MAPA = "#f2f3f5";
+function sigla(nome) {
+  const p = String(nome || "").trim().split(/\s+/);
+  return (p[p.length - 1] || "").slice(0, 3).toUpperCase();
+}
+function maisPerto(pp, x, y) {
+  let m = 0, dm = Infinity;
+  pp.forEach((p, k) => { const dd = (p[0] - x) ** 2 + (p[1] - y) ** 2; if (dd < dm) { dm = dd; m = k; } });
+  return m;
+}
+function textoEscuro(cor) {   // texto preto em cor clara, branco em cor escura
+  const c = String(cor || "#888").replace("#", ""), n = parseInt(c.length === 3 ? c.replace(/./g, "$&$&") : c, 16);
+  const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  return (0.299 * r + 0.587 * g + 0.114 * b) > 150;
+}
+function folga(pp, x, y) {     // distância até o trecho de pista mais perto
+  let m = Infinity;
+  for (let k = 0; k < pp.length; k += 2) m = Math.min(m, Math.hypot(pp[k][0] - x, pp[k][1] - y));
+  return m;
+}
+function caixaTexto(x, y, linhas, fundo, cor, ang) {
+  ctx.save(); ctx.translate(x, y); if (ang) ctx.rotate(ang);
+  ctx.font = "800 9px Titillium Web, Segoe UI, sans-serif";
+  const w = Math.max(...linhas.map(t => ctx.measureText(t).width)) + 10, h = 11 * linhas.length + 5;
+  ctx.fillStyle = fundo; ctx.strokeStyle = TINTA; ctx.lineWidth = 1.4;
+  ctx.beginPath(); ctx.roundRect ? ctx.roundRect(-w / 2, -h / 2, w, h, 3) : ctx.rect(-w / 2, -h / 2, w, h);
+  ctx.fill(); ctx.stroke();
+  ctx.fillStyle = cor; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  linhas.forEach((t, k) => ctx.fillText(t, 0, -h / 2 + 8.5 + k * 11));
+  ctx.restore();
+  return [x - w / 2, y - h / 2, w, h];
+}
+function etiqueta(x, y, texto, cor, destaque, ocupado, pontos) {
+  ctx.font = `700 ${destaque ? 12 : 11}px Titillium Web, Segoe UI, sans-serif`;
+  const w = ctx.measureText(texto).width + 10, h = destaque ? 18 : 16;
+  const W = cv.width / (window.devicePixelRatio || 1), H = cv.height / (window.devicePixelRatio || 1);
+  let melhor = null;
+  for (const [dx, dy] of [[14, -h - 12], [-w - 14, -h - 12], [14, 12], [-w - 14, 12], [18, -h / 2], [-w - 18, -h / 2]]) {
+    const bx = x + dx, by = y + dy;
+    let custo = (bx < 2 || by < 2 || bx + w > W - 2 || by + h > H - 2) ? 50 : 0;
+    ocupado.forEach(o => { if (bx < o[0] + o[2] && bx + w > o[0] && by < o[1] + o[3] && by + h > o[1]) custo += 20; });
+    pontos.forEach(p => { if (p[0] > bx - 8 && p[0] < bx + w + 8 && p[1] > by - 8 && p[1] < by + h + 8) custo += 3; });
+    if (!melhor || custo < melhor[2]) melhor = [bx, by, custo];
+  }
+  const [bx, by] = melhor;
+  ocupado.push([bx, by, w, h]);
+  const lx = Math.max(bx, Math.min(x, bx + w)), ly = Math.max(by, Math.min(y, by + h));
+  ctx.strokeStyle = "rgba(21,22,28,.55)"; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(lx, ly); ctx.stroke();
+  ctx.fillStyle = destaque ? TINTA : "#fff";
+  ctx.beginPath(); ctx.roundRect ? ctx.roundRect(bx, by, w, h, 4) : ctx.rect(bx, by, w, h); ctx.fill();
+  ctx.strokeStyle = TINTA; ctx.lineWidth = 1; ctx.stroke();
+  ctx.fillStyle = cor; ctx.fillRect(bx + 1, by + 1, 3, h - 2);
+  ctx.fillStyle = destaque ? "#fff" : TINTA; ctx.textAlign = "left"; ctx.textBaseline = "middle";
+  ctx.fillText(texto, bx + 7, by + h / 2 + 1);
+}
+
+// curvas: pontos de maior curvatura, tantos quanto a pista tem oficialmente, numerados a partir da largada
+let cacheCurvas = { chave: "", lista: [] };
+function acharCurvas(mundo, n, iL, comp) {
+  const N = mundo.length, chave = mapa.versao + ":" + N + ":" + iL + ":" + n;
+  if (cacheCurvas.chave === chave) return cacheCurvas.lista;
+  const passo = comp > 0 ? comp / N : 6;
+  const k = Math.max(2, Math.round(18 / passo));
+  const giro = new Array(N).fill(0), sinal = new Array(N).fill(0);
+  for (let i = 0; i < N; i++) {
+    const a = mundo[(i - k + N) % N], b = mundo[i], c = mundo[(i + k) % N];
+    const h1 = Math.atan2(b[1] - a[1], b[0] - a[0]), h2 = Math.atan2(c[1] - b[1], c[0] - b[0]);
+    let dh = h2 - h1; while (dh > Math.PI) dh -= 2 * Math.PI; while (dh < -Math.PI) dh += 2 * Math.PI;
+    giro[i] = Math.abs(dh); sinal[i] = Math.sign(dh);
+  }
+  const suave = giro.map((_, i) => (giro[(i - 1 + N) % N] + 2 * giro[i] + giro[(i + 1) % N]) / 4);
+  const sep = Math.max(3, Math.round(32 / passo));
+  const cand = [];
+  for (let i = 0; i < N; i++) {
+    let pico = suave[i] > 0.12;
+    for (let j = 1; j <= sep && pico; j++) if (suave[(i + j) % N] > suave[i] || suave[(i - j + N) % N] > suave[i]) pico = false;
+    if (pico) cand.push(i);
+  }
+  cand.sort((a, b) => suave[b] - suave[a]);
+  const escolhidas = [];
+  for (const i of cand) {
+    if (escolhidas.length >= (n || 12)) break;
+    if (escolhidas.every(j => Math.min(Math.abs(i - j), N - Math.abs(i - j)) >= sep)) escolhidas.push(i);
+  }
+  escolhidas.sort((a, b) => ((a - iL + N) % N) - ((b - iL + N) % N));
+  cacheCurvas = { chave, lista: escolhidas.map(i => [i, sinal[i]]) };
+  return cacheCurvas.lista;
+}
+
+function desenharMapa(d) {
+  const r = cv.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+  if (cv.width !== Math.round(r.width * dpr) || cv.height !== Math.round(r.height * dpr)) {
+    cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr);
+  }
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.fillStyle = FUNDO_MAPA; ctx.fillRect(0, 0, r.width, r.height);
+  const pts = mapa.pontos.filter(p => p);
+  const carros = (d ? d.carros : []).filter(c => c.x !== null && c.resultado === 2 || (c.x !== null && c.eu));
+  const todos = pts.length > 20 ? pts : pts.concat(carros.map(c => [c.x, c.z]));
+  $("mapa-aviso").style.display = pts.length > 20 ? "none" : "flex";
+  if (todos.length < 2) return;
+  const tf = mapa.tf;
+  const proj = tf ? (x, z) => [tf.a * x + tf.b * z + tf.c, tf.d * x + tf.e * z + tf.f] : (x, z) => [x, -z];
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  todos.forEach(([x, z]) => { const [u, v] = proj(x, z); minX = Math.min(minX, u); maxX = Math.max(maxX, u); minY = Math.min(minY, v); maxY = Math.max(maxY, v); });
+  const pad = 38, w = r.width - 2 * pad, h = r.height - 2 * pad;
+  const esc2 = Math.min(w / Math.max(1, maxX - minX), h / Math.max(1, maxY - minY));
+  const ox = pad + (w - (maxX - minX) * esc2) / 2, oy = pad + (h - (maxY - minY) * esc2) / 2;
+  const P = (x, z) => { const [u, v] = proj(x, z); return [ox + (u - minX) * esc2, oy + (v - minY) * esc2]; };
+  const LARG = Math.max(9, Math.min(15, Math.min(r.width, r.height) * 0.03)), MIOLO = Math.max(2.5, LARG * 0.27);
+  ctx.lineJoin = ctx.lineCap = "round";
+  const traco = (lista, fechar) => {
+    ctx.beginPath(); let aberto = false;
+    lista.forEach(p => { if (!p) { aberto = false; return; } aberto ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]); aberto = true; });
+    if (fechar) ctx.closePath();
+  };
+  const ocupado = [];
+  if (pts.length > 20) {
+    const pp = mapa.pontos.map(p => p ? P(p[0], p[1]) : null);
+    const cheio = pp.filter(p => p), mundo = mapa.pontos.filter(p => p), fechado = !!mapa.completo, n = cheio.length;
+    // pista preta grossa + linha fina colorida por setor
+    traco(pp, fechado); ctx.strokeStyle = TINTA; ctx.lineWidth = LARG; ctx.stroke();
+    const m = mapa.marcas || {};
+    const marca = k => m[k] ? maisPerto(cheio, ...P(m[k][0], m[k][1])) : null;
+    let iL = marca("largada"); const i2 = marca("s2"), i3 = marca("s3");
+    if (iL === null) iL = 0;
+    const trecho = (a, b) => { const o = []; for (let k = a; ; k = (k + 1) % n) { o.push(cheio[k]); if (k === b) break; } return o; };
+    const setores = (fechado && i2 !== null && i3 !== null) ? [[iL, i2], [i2, i3], [i3, iL]] : null;
+    if (setores) {
+      setores.forEach(([a, b], k) => { traco(trecho(a, b), false); ctx.strokeStyle = COR_SETOR[k]; ctx.lineWidth = MIOLO; ctx.lineCap = "butt"; ctx.stroke(); ctx.lineCap = "round"; });
+    } else {
+      traco(pp, fechado); ctx.strokeStyle = "#8c929c"; ctx.lineWidth = MIOLO; ctx.stroke();
+    }
+    // bandeira quadriculada na linha de chegada
+    const a0 = cheio[iL], b0 = cheio[(iL + 2) % n];
+    if (a0 && b0) {
+      const ang = Math.atan2(b0[1] - a0[1], b0[0] - a0[0]), q = LARG / 4;
+      ctx.save(); ctx.translate(a0[0], a0[1]); ctx.rotate(ang);
+      for (let i = 0; i < 2; i++) for (let j = -2; j < 2; j++) { ctx.fillStyle = (i + j) % 2 ? "#fff" : TINTA; ctx.fillRect(i * q - q, j * q, q, q); }
+      ctx.strokeStyle = "#fff"; ctx.lineWidth = 1; ctx.strokeRect(-q, -2 * q, 2 * q, 4 * q);
+      ctx.restore();
+    }
+    // números das curvas
+    // curvas oficiais (número da F1) quando já localizadas; senão, as de maior curvatura
+    const oficiais = (mapa.curvas_pos || []).map(([rot, x, z]) => [maisPerto(cheio, ...P(x, z)), rot]);
+    const curvas = oficiais.length ? oficiais
+      : acharCurvas(mundo, mapa.curvas, iL, mapa.comprimento || 0).map(([i], k) => [i, String(k + 1)]);
+    curvas.forEach(([i, rotulo]) => {
+      const a = cheio[(i - 2 + n) % n], b = cheio[(i + 2) % n], c = cheio[i];
+      const dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1;
+      // o mais perto possível da pista, sem encostar nela nem em outro número
+      let melhor = null;
+      const minimo = LARG / 2 + 8;
+      for (const dist of [LARG / 2 + 10, LARG / 2 + 14, LARG / 2 + 19, LARG / 2 + 25]) {
+        for (const lado of [1, -1]) {
+          const x = c[0] + (-dy / L) * dist * lado, y = c[1] + (dx / L) * dist * lado;
+          let f = folga(cheio, x, y);
+          if (x < 9 || y < 9 || x > r.width - 9 || y > r.height - 9) f -= 100;
+          ocupado.forEach(o => { if (Math.hypot(o[0] + o[2] / 2 - x, o[1] + o[3] / 2 - y) < 16) f -= 30; });
+          if (!melhor || f > melhor[2]) melhor = [x, y, f];
+        }
+        if (melhor[2] >= minimo) break;
+      }
+      const raioN = rotulo.length > 2 ? 9 : 7.5;
+      ctx.beginPath(); ctx.arc(melhor[0], melhor[1], raioN, 0, 7); ctx.fillStyle = "#fff"; ctx.fill();
+      ctx.strokeStyle = TINTA; ctx.lineWidth = 1.1; ctx.stroke();
+      ctx.fillStyle = TINTA; ctx.font = `700 ${rotulo.length > 2 ? 8 : 9}px Titillium Web, Segoe UI, sans-serif`;
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.fillText(rotulo, melhor[0], melhor[1] + 0.5);
+      ocupado.push([melhor[0] - 8, melhor[1] - 8, 16, 16]);
+    });
+    // etiquetas "SETOR 1/2/3" em cima da pista, no meio de cada setor
+    if (setores) setores.forEach(([a, b], k) => {
+      const t = trecho(a, b), mm = Math.floor(t.length / 2), p1 = t[Math.max(0, mm - 3)], p2 = t[Math.min(t.length - 1, mm + 3)];
+      let ang = Math.atan2(p2[1] - p1[1], p2[0] - p1[0]);
+      if (ang > Math.PI / 2) ang -= Math.PI; if (ang < -Math.PI / 2) ang += Math.PI;
+      ocupado.push(caixaTexto(t[mm][0], t[mm][1], [T("SETOR ", "SECTOR ") + (k + 1)], "#fff", TINTA, ang));
+    });
+    // marcadores: ativação do Overtake e speed trap
+    const ex = mapa.extras || {};
+    const marcador = (wx, wz, linhas, corPonto, corCaixa, corTexto) => {
+      const [px, py] = P(wx, wz), i = maisPerto(cheio, px, py), c = cheio[i];
+      const a = cheio[(i - 2 + n) % n], b = cheio[(i + 2) % n], dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1;
+      let melhor = null;
+      for (const lado of [1, -1]) for (const dist of [40, 55, 70, 90]) for (const des of [-40, -20, 0, 20, 40]) {
+        const x = c[0] + (-dy / L) * dist * lado + (dx / L) * des, y = c[1] + (dx / L) * dist * lado + (dy / L) * des;
+        let f = Math.min(folga(cheio, x, y), 40);
+        if (x < 45 || y < 14 || x > r.width - 45 || y > r.height - 14) f -= 100;
+        ocupado.forEach(o => { if (x > o[0] - 45 && x < o[0] + o[2] + 45 && y > o[1] - 16 && y < o[1] + o[3] + 16) f -= 200; });
+        if (!melhor || f > melhor[2]) melhor = [x, y, f];
+      }
+      ctx.strokeStyle = TINTA; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(c[0], c[1]); ctx.lineTo(melhor[0], melhor[1]); ctx.stroke();
+      ocupado.push(caixaTexto(melhor[0], melhor[1], linhas, corCaixa, corTexto, 0));
+      ctx.beginPath(); ctx.arc(c[0], c[1], LARG * 0.42, 0, 7); ctx.fillStyle = corPonto; ctx.fill();
+      ctx.strokeStyle = "#fff"; ctx.lineWidth = 1.5; ctx.stroke();
+    };
+    (ex.overtake || []).forEach(o => marcador(o[0], o[1], EN ? ["OVERTAKE", "ACTIVATION"] : ["ATIVAÇÃO", "DO OVERTAKE"], "#22c77a", "#7fe0ab", "#0b3b22"));
+    if (ex.speed_trap) marcador(ex.speed_trap[0], ex.speed_trap[1], ["SPEED TRAP"], "#d7f23a", "#e9f74a", TINTA);
+  }
+  // carros: cor da equipe, número da posição; o seu por cima, com etiquetas no seu e nos vizinhos
+  const eu = carros.find(c => c.eu);
+  carros.sort((a, b) => (a.eu - b.eu) || (b.pos - a.pos)).forEach(c => {
+    const [a, b] = P(c.x, c.z), raio = c.eu ? 8.5 : 6.5;
+    if (c.eu) { ctx.beginPath(); ctx.arc(a, b, raio + 4, 0, 7); ctx.fillStyle = "rgba(21,22,28,.18)"; ctx.fill(); }
+    ctx.beginPath(); ctx.arc(a, b, raio, 0, 7);
+    ctx.fillStyle = c.pit ? "#9aa0a8" : c.cor; ctx.fill();
+    ctx.lineWidth = c.eu ? 2.5 : 1.5; ctx.strokeStyle = c.eu ? "#fff" : (textoEscuro(c.cor) ? TINTA : "#fff"); ctx.stroke();
+    if (c.eu) { ctx.beginPath(); ctx.arc(a, b, raio + 1.6, 0, 7); ctx.strokeStyle = TINTA; ctx.lineWidth = 1; ctx.stroke(); }
+    ctx.fillStyle = textoEscuro(c.pit ? "#9aa0a8" : c.cor) ? TINTA : "#fff";
+    ctx.font = `900 ${c.eu ? 10 : 8}px Titillium Web, Segoe UI, sans-serif`;
+    ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(c.pos, a, b + 0.5);
+  });
+  if (eu) {
+    const pontos = carros.map(c => P(c.x, c.z));
+    const [ea, eb] = P(eu.x, eu.z);
+    ocupado.push([ea - 12, eb - 12, 24, 24]);
+    etiqueta(ea, eb, `P${eu.pos} ${T("VOCÊ", "YOU")}`, eu.cor, true, ocupado, pontos);
+    carros.filter(c => !c.eu && Math.abs(c.pos - eu.pos) === 1).sort((x, y) => x.pos - y.pos).forEach(c => {
+      const [a, b] = P(c.x, c.z); etiqueta(a, b, `P${c.pos} ${sigla(c.nome)}`, c.cor, false, ocupado, pontos);
+    });
+  }
+}
+
+window.addEventListener("resize", () => desenharMapa(estado));
+
+async function buscarMapa() {
+  try { mapa = await (await fetch("/mapa")).json(); } catch (e) {}
+}
+
+async function ciclo() {
+  try {
+    const d = await (await fetch("/estado")).json();
+    estado = d;
+    definirIdioma(d.idioma);
+    $("conexao").classList.toggle("ok", !!d.conectado);
+    $("conexao").querySelector("span").textContent = d.demo ? T("demonstração", "demo")
+      : d.conectado ? T("jogo conectado", "game connected") : T("sem dados do jogo", "no game data");
+    $("espera").classList.toggle("oculta", !!d.sessao);
+    $("faixa-demo").classList.toggle("on", !!d.demo); document.body.classList.toggle("demo", !!d.demo);
+    const at = d.atualizacao, ba = $("btn-atualizar");
+    if (at && at.versao) { ba.hidden = false; ba.href = at.link; ba.textContent = "⬆ v" + at.versao;
+      ba.title = T("Versão nova disponível: clique para baixar", "New version available: click to download"); }
+    radio(d.radio || []);
+    if (d.sessao) {
+      if (d.mapa_versao !== mapa.versao) await buscarMapa();
+      topo(d); torre(d); carro(d); voltas(d); desenharMapa(d); pecas(d.pecas);
+    }
+  } catch (e) {
+    $("conexao").classList.remove("ok");
+    $("conexao").querySelector("span").textContent = T("engenheiro fechado", "engineer closed");
+  }
+  setTimeout(ciclo, 200);
+}
+ciclo();
+</script>
+</body>
+</html>

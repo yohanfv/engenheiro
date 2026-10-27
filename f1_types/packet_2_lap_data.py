@@ -1,0 +1,827 @@
+# MIT License
+#
+# Copyright (c) [2024] [Ashwin Natarajan]
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
+import struct
+from typing import Any, Dict, List, final
+
+from .base_pkt import (F1BaseEnum, F1CompareableEnum, F1PacketBase,
+                       F1SubPacketBase)
+from .common import F1Utils, ResultStatus, get_num_cars
+from .header import PacketHeader
+
+# --------------------- CLASS DEFINITIONS --------------------------------------
+
+class LapData(F1SubPacketBase):
+    """
+    Class representing lap data.
+    Attributes:
+        m_lastLapTimeInMS (uint32): Last lap time in milliseconds.
+        m_currentLapTimeInMS (uint32): Current time around the lap in milliseconds.
+        m_sector1TimeInMS (uint16): Sector 1 time in milliseconds.
+        m_sector1TimeMinutes (uint8): Sector 1 whole minute part.
+        m_sector2TimeInMS (uint16): Sector 2 time in milliseconds.
+        m_sector2TimeMinutes (uint8): Sector 2 whole minute part.
+        m_deltaToCarInFrontInMS (uint16): Time delta to the car in front in milliseconds.
+        m_deltaToRaceLeaderInMS (uint16): Time delta to the race leader in milliseconds.
+        m_lapDistance (float): Distance vehicle is around the current lap in meters.
+        m_totalDistance (float): Total distance traveled in the session in meters.
+        m_safetyCarDelta (float): Delta in seconds for the safety car.
+        m_carPosition (uint8): Car race position.
+        m_currentLapNum (uint8): Current lap number.
+        m_pitStatus (PitStatus): See the PitStatus enumeration
+        m_numPitStops (uint8): Number of pit stops taken in this race.
+        m_sector (Sector): See the sector enumeration
+        m_currentLapInvalid (bool): Current lap validity (False = valid, True = invalid).
+        m_penalties (uint8): Accumulated time penalties in seconds to be added.
+        m_totalWarnings (uint8): Accumulated number of warnings issued.
+        m_cornerCuttingWarnings (uint8): Accumulated number of corner cutting warnings issued.
+        m_numUnservedDriveThroughPens (uint8): Number of drive-through penalties left to serve.
+        m_numUnservedStopGoPens (uint8): Number of stop-go penalties left to serve.
+        m_gridPosition (uint8): Grid position the vehicle started the race in.
+        m_driverStatus (DriverStatus): Status of the driver.
+        m_resultStatus (ResultStatus): Result status of the driver.
+        m_pitLaneTimerActive (bool): Pit lane timing (False = inactive, True = active).
+        m_pitLaneTimeInLaneInMS (uint16): If active, the current time spent in the pit lane in ms.
+        m_pitStopTimerInMS (uint16): Time of the actual pit stop in ms.
+        m_pitStopShouldServePen (uint8): Whether the car should serve a penalty at this stop.
+        m_speedTrapFastestSpeed (float): Fastest speed trap speed in kmph.
+        m_speedTrapFastestLap (uint8): Fastest speed trap lap number.
+
+    Restricted Telemetry:
+        None. No field in this structure is affected by the "Your Telemetry" setting.
+    """
+
+    COMPILED_PACKET_STRUCT_23 = struct.Struct("<"
+        "I" # uint32 - Last lap time in milliseconds
+        "I" # uint32 - Current time around the lap in milliseconds
+        "H" # uint16 - Sector 1 time in milliseconds
+        "B" # uint8  - Sector 1 whole minute part
+        "H" # uint16 - Sector 2 time in milliseconds
+        "B" # uint8  - Sector 2 whole minute part
+        "H" # uint16 - Time delta to car in front in milliseconds
+        "H" # uint16 - Time delta to race leader in milliseconds
+        "f" # float  - Distance vehicle is around current lap in metres - could be negative if line hasn't been crossed yet
+        "f" # float  - Total distance travelled in session in metres - could be negative if line hasn't been crossed yet
+        "f" # float  - Delta in seconds for safety car
+        "B" # uint8  - Car race position
+        "B" # uint8  - Current lap number
+        "B" # uint8  - 0 = none, 1 = pitting, 2 = in pit area
+        "B" # uint8  - Number of pit stops taken in this race
+        "B" # uint8  - 0 = sector1, 1 = sector2, 2 = sector3
+        "B" # uint8  - Current lap invalid - 0 = valid, 1 = invalid
+        "B" # uint8  - Accumulated time penalties in seconds to be added
+        "B" # uint8  - Accumulated number of warnings issued
+        "B" # uint8  - Accumulated number of corner cutting warnings issued
+        "B" # uint8  - Num drive through pens left to serve
+        "B" # uint8  - Num stop go pens left to serve
+        "B" # uint8  - Grid position the vehicle started the race in
+        "B" # uint8  - Status of driver - 0 = in garage, 1 = flying lap 2 = in lap, 3 = out lap, 4 = on track
+        "B" # uint8  - Result status - 0 = invalid, 1 = inactive, 2 = active 3 = finished, 4 = didnotfinish, 5 = disqualified
+                    #                        // 6 = not classified, 7 = retired
+        "B" # uint8  - Pit lane timing, 0 = inactive, 1 = active
+        "H" # uint16 - If active, the current time spent in the pit lane in ms
+        "H" # uint16 - Time of the actual pit stop in ms
+        "B" # uint8  - Whether the car should serve a penalty at this stop
+    )
+    PACKET_LEN_23 = COMPILED_PACKET_STRUCT_23.size
+
+    COMPILED_PACKET_STRUCT_24 = struct.Struct("<"
+        "I" # uint32   m_lastLapTimeInMS;                // Last lap time in milliseconds
+        "I" # uint32   m_currentLapTimeInMS;      // Current time around the lap in milliseconds
+        "H" # uint16   m_sector1TimeMSPart;         // Sector 1 time milliseconds part
+        "B" # uint8    m_sector1TimeMinutesPart;    // Sector 1 whole minute part
+        "H" # uint16   m_sector2TimeMSPart;         // Sector 2 time milliseconds part
+        "B" # uint8    m_sector2TimeMinutesPart;    // Sector 2 whole minute part
+        "H" # uint16   m_deltaToCarInFrontMSPart;   // Time delta to car in front milliseconds part
+        "B" # uint8    m_deltaToCarInFrontMinutesPart; // Time delta to car in front whole minute part
+        "H" # uint16   m_deltaToRaceLeaderMSPart;      // Time delta to race leader milliseconds part
+        "B" # uint8    m_deltaToRaceLeaderMinutesPart; // Time delta to race leader whole minute part
+        "f" # float    m_lapDistance;         // Distance vehicle is around current lap in metres – could
+                      #  // be negative if line hasn’t been crossed yet
+        "f" # float    m_totalDistance;         // Total distance travelled in session in metres – could
+                      #  // be negative if line hasn’t been crossed yet
+        "f" # float    m_safetyCarDelta;            // Delta in seconds for safety car
+        "B" # uint8   # m_carPosition;                // Car race position
+        "B" # uint8    m_currentLapNum;         // Current lap number
+        "B" # uint8    m_pitStatus;                 // 0 = none, 1 = pitting, 2 = in pit area
+        "B" # uint8    m_numPitStops;                 // Number of pit stops taken in this race
+        "B" # uint8    m_sector;                    // 0 = sector1, 1 = sector2, 2 = sector3
+        "B" # uint8    m_currentLapInvalid;         // Current lap invalid - 0 = valid, 1 = invalid
+        "B" # uint8    m_penalties;                 // Accumulated time penalties in seconds to be added
+        "B" # uint8    m_totalWarnings;             // Accumulated number of warnings issued
+        "B" # uint8    m_cornerCuttingWarnings;     // Accumulated number of corner cutting warnings issued
+        "B" # uint8    m_numUnservedDriveThroughPens;  // Num drive through pens left to serve
+        "B" # uint8    m_numUnservedStopGoPens;        // Num stop go pens left to serve
+        "B" # uint8    m_gridPosition;              // Grid position the vehicle started the race in
+        "B" # uint8    m_driverStatus;              // Status of driver - 0 = in garage, 1 = flying lap
+                      #                      // 2 = in lap, 3 = out lap, 4 = on track
+        "B" # uint8    m_resultStatus;              // Result status - 0 = invalid, 1 = inactive, 2 = active
+                      #                      // 3 = finished, 4 = didnotfinish, 5 = disqualified
+                      #                      // 6 = not classified, 7 = retired
+        "B" # uint8    m_pitLaneTimerActive;          // Pit lane timing, 0 = inactive, 1 = active
+        "H" # uint16   m_pitLaneTimeInLaneInMS;        // If active, the current time spent in the pit lane in ms
+        "H" # uint16   m_pitStopTimerInMS;             // Time of the actual pit stop in ms
+        "B" # uint8    m_pitStopShouldServePen;        // Whether the car should serve a penalty at this stop
+        "f" # float    m_speedTrapFastestSpeed;     // Fastest speed through speed trap for this car in kmph
+        "B" # uint8   # m_speedTrapFastestLap;       // Lap no the fastest speed was achieved, 255 = not set
+    )
+    PACKET_LEN_24 = COMPILED_PACKET_STRUCT_24.size
+
+    # Type hints declaration for fields
+    m_packetFormat: int
+    m_lastLapTimeInMS: int
+    m_currentLapTimeInMS: int
+    m_sector1TimeInMS: int
+    m_sector1TimeMinutes: int
+    m_sector2TimeInMS: int
+    m_sector2TimeMinutes: int
+    m_deltaToCarInFrontInMS: int
+    m_deltaToRaceLeaderInMS: int
+    m_lapDistance: float
+    m_totalDistance: float
+    m_safetyCarDelta: float
+    m_carPosition: int
+    m_currentLapNum: int
+    m_pitStatus: "LapData.PitStatus"
+    m_numPitStops: int
+    m_sector: "LapData.Sector"
+    m_currentLapInvalid: bool
+    m_penalties: int
+    m_totalWarnings: int
+    m_cornerCuttingWarnings: int
+    m_numUnservedDriveThroughPens: int
+    m_numUnservedStopGoPens: int
+    m_gridPosition: int
+    m_driverStatus: "LapData.DriverStatus"
+    m_resultStatus: ResultStatus
+    m_pitLaneTimerActive: bool
+    m_pitLaneTimeInLaneInMS: int
+    m_pitStopTimerInMS: int
+    m_pitStopShouldServePen: bool
+    m_speedTrapFastestSpeed: float
+    m_speedTrapFastestLap: int
+
+    __slots__ = (
+        "m_packetFormat",
+        "m_lastLapTimeInMS",
+        "m_currentLapTimeInMS",
+        "m_sector1TimeInMS",
+        "m_sector1TimeMinutes",
+        "m_sector2TimeInMS",
+        "m_sector2TimeMinutes",
+        "m_deltaToCarInFrontInMS",
+        "m_deltaToRaceLeaderInMS",
+        "m_lapDistance",
+        "m_totalDistance",
+        "m_safetyCarDelta",
+        "m_carPosition",
+        "m_currentLapNum",
+        "m_pitStatus",
+        "m_numPitStops",
+        "m_sector",
+        "m_currentLapInvalid",
+        "m_penalties",
+        "m_totalWarnings",
+        "m_cornerCuttingWarnings",
+        "m_numUnservedDriveThroughPens",
+        "m_numUnservedStopGoPens",
+        "m_gridPosition",
+        "m_driverStatus",
+        "m_resultStatus",
+        "m_pitLaneTimerActive",
+        "m_pitLaneTimeInLaneInMS",
+        "m_pitStopTimerInMS",
+        "m_pitStopShouldServePen",
+        "m_speedTrapFastestSpeed",
+        "m_speedTrapFastestLap",
+    )
+
+    class DriverStatus(F1BaseEnum):
+        """
+        Enumeration representing the status of a driver during a racing session.
+
+        Note:
+            Each attribute represents a unique driver status identified by an integer value.
+        """
+
+        IN_GARAGE = 0
+        FLYING_LAP = 1
+        IN_LAP = 2
+        OUT_LAP = 3
+        ON_TRACK = 4
+
+    class PitStatus(F1BaseEnum):
+        """
+        Enumeration representing the pit status of a driver during a racing session.
+        """
+
+        NONE = 0
+        PITTING = 1
+        IN_PIT_AREA = 2
+
+    class Sector(F1CompareableEnum):  # pylint: disable=invalid-enum-extension
+        """
+        Enumeration representing the sector of a racing track.
+        """
+
+        SECTOR1 = 0
+        SECTOR2 = 1
+        SECTOR3 = 2
+
+        @final
+        def __str__(self) -> str:
+            """Return a string representation of the Sector enumeration member.
+
+            Returns:
+                str: A string representing the sector (e.g., "S1", "S2", "S3").
+            """
+            return f"S{self.value + 1}"
+
+    def __init__(self, data: bytes, packet_format: int) -> None:
+        """
+        Initialize LapData instance by unpacking binary data.
+
+        Args:
+        - data (bytes): Binary data containing lap information.
+        - packet_format (int): The format version of the packet.
+
+        Raises:
+        - struct.error: If the binary data does not match the expected format.
+        """
+
+        self.m_packetFormat = packet_format
+        self._parse(data, packet_format)
+        self._cast_enums()
+
+
+    def _parse(self, data: bytes, packet_format: int) -> None:
+        """Raw byte unpacking only. Dispatches to format-specific helpers."""
+        if packet_format == 2023:
+            self._parse_f23(data)
+        else:  # 24+
+            self._parse_f24(data)
+
+    def _parse_f23(self, data: bytes) -> None:
+        (
+            self.m_lastLapTimeInMS,
+            self.m_currentLapTimeInMS,
+            self.m_sector1TimeInMS,
+            self.m_sector1TimeMinutes,
+            self.m_sector2TimeInMS,
+            self.m_sector2TimeMinutes,
+            self.m_deltaToCarInFrontInMS,
+            self.m_deltaToRaceLeaderInMS,
+            self.m_lapDistance,
+            self.m_totalDistance,
+            self.m_safetyCarDelta,
+            self.m_carPosition,
+            self.m_currentLapNum,
+            self.m_pitStatus,
+            self.m_numPitStops,
+            self.m_sector,
+            self.m_currentLapInvalid,
+            self.m_penalties,
+            self.m_totalWarnings,
+            self.m_cornerCuttingWarnings,
+            self.m_numUnservedDriveThroughPens,
+            self.m_numUnservedStopGoPens,
+            self.m_gridPosition,
+            self.m_driverStatus,
+            self.m_resultStatus,
+            self.m_pitLaneTimerActive,
+            self.m_pitLaneTimeInLaneInMS,
+            self.m_pitStopTimerInMS,
+            self.m_pitStopShouldServePen,
+        ) = self.COMPILED_PACKET_STRUCT_23.unpack(data[:self.PACKET_LEN_23])
+        self.m_deltaToCarInFrontMinutes: int = 0
+        self.m_deltaToRaceLeaderMinutes: int = 0
+        self.m_speedTrapFastestSpeed: float = 0
+        self.m_speedTrapFastestLap: int = 0
+
+    def _parse_f24(self, data: bytes) -> None:
+        (
+            self.m_lastLapTimeInMS,
+            self.m_currentLapTimeInMS,
+            self.m_sector1TimeInMS,
+            self.m_sector1TimeMinutes,
+            self.m_sector2TimeInMS,
+            self.m_sector2TimeMinutes,
+            self.m_deltaToCarInFrontInMS,
+            self.m_deltaToCarInFrontMinutes,
+            self.m_deltaToRaceLeaderInMS,
+            self.m_deltaToRaceLeaderMinutes,
+            self.m_lapDistance,
+            self.m_totalDistance,
+            self.m_safetyCarDelta,
+            self.m_carPosition,
+            self.m_currentLapNum,
+            self.m_pitStatus,
+            self.m_numPitStops,
+            self.m_sector,
+            self.m_currentLapInvalid,
+            self.m_penalties,
+            self.m_totalWarnings,
+            self.m_cornerCuttingWarnings,
+            self.m_numUnservedDriveThroughPens,
+            self.m_numUnservedStopGoPens,
+            self.m_gridPosition,
+            self.m_driverStatus,
+            self.m_resultStatus,
+            self.m_pitLaneTimerActive,
+            self.m_pitLaneTimeInLaneInMS,
+            self.m_pitStopTimerInMS,
+            self.m_pitStopShouldServePen,
+            self.m_speedTrapFastestSpeed,
+            self.m_speedTrapFastestLap
+        ) = self.COMPILED_PACKET_STRUCT_24.unpack(data[0:self.PACKET_LEN_24])
+
+    def _cast_enums(self) -> None:
+        """All safeCast and bool conversions in one place."""
+        self.m_driverStatus = LapData.DriverStatus.safeCast(self.m_driverStatus)
+        self.m_resultStatus = ResultStatus.safeCast(self.m_resultStatus)
+        self.m_pitStatus = LapData.PitStatus.safeCast(self.m_pitStatus)
+        self.m_sector = LapData.Sector.safeCast(self.m_sector)
+        self.m_currentLapInvalid = bool(self.m_currentLapInvalid)
+        self.m_pitLaneTimerActive = bool(self.m_pitLaneTimerActive)
+
+    def __str__(self) -> str:
+        """
+        Return a string representation of the LapData instance.
+
+        Returns:
+        - str: String representation of LapData.
+        """
+        return (
+            f"LapData("
+            f"Last Lap Time: {self.m_lastLapTimeInMS} ms, "
+            f"Current Lap Time: {self.m_currentLapTimeInMS} ms, "
+            f"Sector 1 Time: {self.m_sector1TimeInMS} ms, "
+            f"Sector 1 Time (Minutes): {self.m_sector1TimeMinutes}, "
+            f"Sector 2 Time: {self.m_sector2TimeInMS} ms, "
+            f"Sector 2 Time (Minutes): {self.m_sector2TimeMinutes}, "
+            f"Delta To Car In Front: {self.m_deltaToCarInFrontInMS} ms, "
+            f"Delta To Race Leader: {self.m_deltaToRaceLeaderInMS} ms, "
+            f"Lap Distance: {self.m_lapDistance} meters, "
+            f"Total Distance: {self.m_totalDistance} meters, "
+            f"Safety Car Delta: {self.m_safetyCarDelta} seconds, "
+            f"Car Position: {self.m_carPosition}, "
+            f"Current Lap Number: {self.m_currentLapNum}, "
+            f"Pit Status: {self.m_pitStatus}, "
+            f"Number of Pit Stops: {self.m_numPitStops}, "
+            f"Sector: {self.m_sector}, "
+            f"Current Lap Invalid: {self.m_currentLapInvalid}, "
+            f"Penalties: {self.m_penalties}, "
+            f"Total Warnings: {self.m_totalWarnings}, "
+            f"Corner Cutting Warnings: {self.m_cornerCuttingWarnings}, "
+            f"Unserved Drive Through Pens: {self.m_numUnservedDriveThroughPens}, "
+            f"Unserved Stop Go Pens: {self.m_numUnservedStopGoPens}, "
+            f"Grid Position: {self.m_gridPosition}, "
+            f"Driver Status: {self.m_driverStatus}, "
+            f"Result Status: {self.m_resultStatus}, "
+            f"Pit Lane Timer Active: {self.m_pitLaneTimerActive}, "
+            f"Pit Lane Time in Lane: {self.m_pitLaneTimeInLaneInMS} ms, "
+            f"Pit Stop Timer: {self.m_pitStopTimerInMS} ms, "
+            f"Pit Stop Should Serve Penalty: {self.m_pitStopShouldServePen})"
+        )
+
+    def toJSON(self) -> Dict[str, Any]:
+        """
+        Convert LapData instance to JSON format.
+
+        Returns:
+        - dict: JSON representation of LapData.
+        """
+
+        return {
+            "last-lap-time-in-ms": self.m_lastLapTimeInMS,
+            "last-lap-time-str": F1Utils.millisecondsToMinutesSecondsMilliseconds(self.m_lastLapTimeInMS),
+            "current-lap-time-in-ms": self.m_currentLapTimeInMS,
+            "current-lap-time-str": F1Utils.millisecondsToMinutesSecondsMilliseconds(self.m_currentLapTimeInMS),
+            "sector-1-time-in-ms": self.m_sector1TimeInMS,
+            "sector-1-time-minutes": self.m_sector1TimeMinutes,
+            "sector-1-time-str": F1Utils.getLapTimeStrSplit(self.m_sector1TimeMinutes, self.m_sector1TimeInMS),
+            "sector-2-time-in-ms": self.m_sector2TimeInMS,
+            "sector-2-time-minutes": self.m_sector2TimeMinutes,
+            "sector-2-time-str": F1Utils.getLapTimeStrSplit(self.m_sector2TimeMinutes, self.m_sector2TimeInMS),
+            "delta-to-car-in-front-in-ms": self.m_deltaToCarInFrontInMS,
+            "delta-to-car-in-front-minutes": self.m_deltaToCarInFrontMinutes,
+            "delta-to-race-leader-in-ms": self.m_deltaToRaceLeaderInMS,
+            "delta-to-race-leader-minutes": self.m_deltaToRaceLeaderMinutes,
+            "lap-distance": self.m_lapDistance,
+            "total-distance": self.m_totalDistance,
+            "safety-car-delta": self.m_safetyCarDelta,
+            "car-position": self.m_carPosition,
+            "current-lap-num": self.m_currentLapNum,
+            "pit-status": str(self.m_pitStatus),
+            "num-pit-stops": self.m_numPitStops,
+            "sector": str(self.m_sector.value),
+            "current-lap-invalid": self.m_currentLapInvalid,
+            "penalties": self.m_penalties,
+            "total-warnings": self.m_totalWarnings,
+            "corner-cutting-warnings": self.m_cornerCuttingWarnings,
+            "num-unserved-drive-through-pens": self.m_numUnservedDriveThroughPens,
+            "num-unserved-stop-go-pens": self.m_numUnservedStopGoPens,
+            "grid-position": self.m_gridPosition,
+            "driver-status": str(self.m_driverStatus),
+            "result-status": str(self.m_resultStatus),
+            "pit-lane-timer-active": self.m_pitLaneTimerActive,
+            "pit-lane-time-in-lane-in-ms": self.m_pitLaneTimeInLaneInMS,
+            "pit-stop-timer-in-ms": self.m_pitStopTimerInMS,
+            "pit-stop-should-serve-pen": self.m_pitStopShouldServePen,
+            "speed-trap-fastest-speed" : self.m_speedTrapFastestSpeed,
+            "speed-trap-fastest-lap" : self.m_speedTrapFastestLap,
+        }
+
+    def __eq__(self, other: object) -> bool:
+        """
+        Check if two LapData instances are equal.
+
+        Args:
+            other (object): The object to compare with.
+
+        Returns:
+            bool: True if both instances are equal, False otherwise.
+        """
+        if not isinstance(other, LapData):
+            return False
+
+        return (
+            self.m_packetFormat == other.m_packetFormat and
+            self.m_lastLapTimeInMS == other.m_lastLapTimeInMS and
+            self.m_currentLapTimeInMS == other.m_currentLapTimeInMS and
+            self.m_sector1TimeInMS == other.m_sector1TimeInMS and
+            self.m_sector1TimeMinutes == other.m_sector1TimeMinutes and
+            self.m_sector2TimeInMS == other.m_sector2TimeInMS and
+            self.m_sector2TimeMinutes == other.m_sector2TimeMinutes and
+            self.m_deltaToCarInFrontInMS == other.m_deltaToCarInFrontInMS and
+            self.m_deltaToRaceLeaderInMS == other.m_deltaToRaceLeaderInMS and
+            self.m_lapDistance == other.m_lapDistance and
+            self.m_totalDistance == other.m_totalDistance and
+            self.m_safetyCarDelta == other.m_safetyCarDelta and
+            self.m_carPosition == other.m_carPosition and
+            self.m_currentLapNum == other.m_currentLapNum and
+            self.m_pitStatus == other.m_pitStatus and
+            self.m_numPitStops == other.m_numPitStops and
+            self.m_sector == other.m_sector and
+            self.m_currentLapInvalid == other.m_currentLapInvalid and
+            self.m_penalties == other.m_penalties and
+            self.m_totalWarnings == other.m_totalWarnings and
+            self.m_cornerCuttingWarnings == other.m_cornerCuttingWarnings and
+            self.m_numUnservedDriveThroughPens == other.m_numUnservedDriveThroughPens and
+            self.m_numUnservedStopGoPens == other.m_numUnservedStopGoPens and
+            self.m_gridPosition == other.m_gridPosition and
+            self.m_driverStatus == other.m_driverStatus and
+            self.m_resultStatus == other.m_resultStatus and
+            self.m_pitLaneTimerActive == other.m_pitLaneTimerActive and
+            self.m_pitLaneTimeInLaneInMS == other.m_pitLaneTimeInLaneInMS and
+            self.m_pitStopTimerInMS == other.m_pitStopTimerInMS and
+            self.m_pitStopShouldServePen == other.m_pitStopShouldServePen and
+            self.m_speedTrapFastestSpeed == other.m_speedTrapFastestSpeed and
+            self.m_speedTrapFastestLap == other.m_speedTrapFastestLap
+        )
+
+    def __ne__(self, other: object) -> bool:
+        """
+        Check if two LapData instances are not equal.
+
+        Args:
+            other (object): The object to compare with.
+
+        Returns:
+            bool: True if both instances are not equal, False otherwise.
+        """
+        return not self.__eq__(other)
+
+    def to_bytes(self) -> bytes:
+        """Serialize LapData to bytes using the F1 24+ struct (same for F1 25/26).
+
+        Returns:
+            bytes: The serialized bytes.
+        """
+        return self.COMPILED_PACKET_STRUCT_24.pack(
+            self.m_lastLapTimeInMS,
+            self.m_currentLapTimeInMS,
+            self.m_sector1TimeInMS,
+            self.m_sector1TimeMinutes,
+            self.m_sector2TimeInMS,
+            self.m_sector2TimeMinutes,
+            self.m_deltaToCarInFrontInMS,
+            self.m_deltaToCarInFrontMinutes,
+            self.m_deltaToRaceLeaderInMS,
+            self.m_deltaToRaceLeaderMinutes,
+            self.m_lapDistance,
+            self.m_totalDistance,
+            self.m_safetyCarDelta,
+            self.m_carPosition,
+            self.m_currentLapNum,
+            self.m_pitStatus.value,
+            self.m_numPitStops,
+            self.m_sector.value,
+            int(self.m_currentLapInvalid),
+            self.m_penalties,
+            self.m_totalWarnings,
+            self.m_cornerCuttingWarnings,
+            self.m_numUnservedDriveThroughPens,
+            self.m_numUnservedStopGoPens,
+            self.m_gridPosition,
+            self.m_driverStatus.value,
+            self.m_resultStatus.value,
+            int(self.m_pitLaneTimerActive),
+            self.m_pitLaneTimeInLaneInMS,
+            self.m_pitStopTimerInMS,
+            self.m_pitStopShouldServePen,
+            self.m_speedTrapFastestSpeed,
+            self.m_speedTrapFastestLap,
+        )
+
+    @classmethod
+    def from_values(cls,
+                    last_lap_time_ms: int,
+                    current_lap_time_ms: int,
+                    sector1_time_ms: int,
+                    sector1_time_minutes: int,
+                    sector2_time_ms: int,
+                    sector2_time_minutes: int,
+                    delta_to_front_ms: int,
+                    delta_to_front_minutes: int,
+                    delta_to_leader_ms: int,
+                    delta_to_leader_minutes: int,
+                    lap_distance: float,
+                    total_distance: float,
+                    safety_car_delta: float,
+                    car_position: int,
+                    current_lap_num: int,
+                    pit_status: int,
+                    num_pit_stops: int,
+                    sector: int,
+                    current_lap_invalid: int,
+                    penalties: int,
+                    total_warnings: int,
+                    corner_cutting_warnings: int,
+                    num_unserved_drive_through_pens: int,
+                    num_unserved_stop_go_pens: int,
+                    grid_position: int,
+                    driver_status: int,
+                    result_status: int,
+                    pit_lane_timer_active: int,
+                    pit_lane_time_ms: int,
+                    pit_stop_timer_ms: int,
+                    pit_stop_should_serve_pen: int,
+                    speed_trap_fastest_speed: float,
+                    speed_trap_fastest_lap: int,
+                    packet_format: int = 2024) -> 'LapData':
+        """Create a LapData object from individual field values (F1 24+ format).
+
+        Returns:
+            LapData: A LapData object initialized with the provided values.
+        """
+        data = cls.COMPILED_PACKET_STRUCT_24.pack(
+            last_lap_time_ms, current_lap_time_ms,
+            sector1_time_ms, sector1_time_minutes,
+            sector2_time_ms, sector2_time_minutes,
+            delta_to_front_ms, delta_to_front_minutes,
+            delta_to_leader_ms, delta_to_leader_minutes,
+            lap_distance, total_distance, safety_car_delta,
+            car_position, current_lap_num, pit_status, num_pit_stops,
+            sector, current_lap_invalid, penalties, total_warnings,
+            corner_cutting_warnings, num_unserved_drive_through_pens,
+            num_unserved_stop_go_pens, grid_position, driver_status,
+            result_status, pit_lane_timer_active, pit_lane_time_ms,
+            pit_stop_timer_ms, pit_stop_should_serve_pen,
+            speed_trap_fastest_speed, speed_trap_fastest_lap,
+        )
+        return cls(data, packet_format)
+
+    @property
+    def s1TimeMS(self) -> int:
+        """Return the total S1 time in ms."""
+        if not self._is_active_with_valid_time():
+            return 0
+
+        if self.m_sector == LapData.Sector.SECTOR1:
+            # S1 is ongoing, use current lap time
+            return self.m_currentLapTimeInMS
+
+        return self._get_combined_time_ms(self.m_sector1TimeInMS, self.m_sector1TimeMinutes)
+
+    @property
+    def s2TimeMS(self) -> int:
+        """Return the total S2 time in ms."""
+        if not self._is_active_with_valid_time():
+            return 0
+
+        if self.m_sector == LapData.Sector.SECTOR1:
+            return 0
+
+        if self.m_sector == LapData.Sector.SECTOR2:
+            # S2 is ongoing, calculate as current lap time minus S1
+            return self.m_currentLapTimeInMS - self.s1TimeMS
+
+        # S2 is completed, read from packet
+        return self._get_combined_time_ms(self.m_sector2TimeInMS, self.m_sector2TimeMinutes)
+
+    @property
+    def s3TimeMS(self) -> int:
+        """Return the total S3 time in ms."""
+        if not self._is_active_with_valid_time():
+            return 0
+
+        if self.m_sector < LapData.Sector.SECTOR3:
+            return 0
+
+        # Calculate S3 as remaining time after S1 and S2
+        return self.m_currentLapTimeInMS - (self.s1TimeMS + self.s2TimeMS)
+
+    @property
+    def deltaToFrontTotalMs(self) -> int:
+        """Return the total delta to car in front in ms."""
+        return self.m_deltaToCarInFrontInMS + (self.m_deltaToCarInFrontMinutes * 60000)
+
+    @property
+    def deltaToLeaderTotalMs(self) -> int:
+        """Return the total delta to race leader in ms."""
+        return self.m_deltaToRaceLeaderInMS + (self.m_deltaToRaceLeaderMinutes * 60000)
+
+    def _is_active_with_valid_time(self) -> bool:
+        """Check if result is active and has valid current lap time."""
+        return (self.m_resultStatus == ResultStatus.ACTIVE and
+                self.m_currentLapTimeInMS > 0)
+
+    def _get_combined_time_ms(self, ms_part: int, min_part: int) -> int:
+        """
+        Combine minutes and milliseconds into total milliseconds.
+
+        Args:
+            ms_part: The milliseconds component
+            min_part: The minutes component
+
+        Returns:
+            Total time in milliseconds
+        """
+        return (min_part * 60 * 1000) + ms_part
+
+class PacketLapData(F1PacketBase):
+    """Class representing the incoming PacketLapData.
+
+    Attributes:
+        - m_header (PacketHeader) - The header object
+        - m_lapData(List[LapData]) - The list of LapData objects, in the order of driver index
+        - m_timeTrialPBCarIdx (int) - Index of Personal Best car in time trial (255 if invalid)
+        - m_timeTrialRivalCarIdx (int) - Index of Rival car in time trial (255 if invalid)
+    """
+
+    MAX_CARS = 22
+    MAX_CARS_2026 = 24
+
+    __slots__ = (
+        "m_lapData",
+        "m_timeTrialPBCarIdx",
+        "m_timeTrialRivalCarIdx",
+    )
+
+    def __init__(self, header: PacketHeader, packet: bytes) -> None:
+        """
+        Initialize PacketLapData instance by unpacking binary data.
+        Args:
+            - header (PacketHeader): Packet header information.
+            - packet (bytes): Binary data containing lap data packet.
+
+        """
+        super().__init__(header)
+
+        # Determine LapData size based on game year (F1 26 uses the same struct as F1 24/25)
+        lap_data_obj_size = LapData.PACKET_LEN_24
+        if header.m_packetFormat == 2023:
+            lap_data_obj_size = LapData.PACKET_LEN_23
+
+        num_cars = get_num_cars(header.m_packetFormat)
+
+        self.m_lapData: List[LapData]
+        self.m_lapData, offset_so_far = LapData.parse_array(
+            data=packet,
+            offset=0,
+            item_len=lap_data_obj_size,
+            count=num_cars,
+            max_count=num_cars,
+            packet_format=header.m_packetFormat
+        )
+
+        # Extract time trial indices from the last 2 bytes
+        time_trial_data = packet[offset_so_far:]
+        self.m_timeTrialPBCarIdx, self.m_timeTrialRivalCarIdx = struct.unpack('<bb', time_trial_data)
+
+    def __str__(self) -> str:
+        """
+        Return a string representation of the PacketLapData instance.
+
+        Returns:
+        - str: String representation of PacketLapData.
+        """
+        lap_data_str = ", ".join(str(data) for data in self.m_lapData)
+        return f"PacketLapData(Header: {str(self.m_header)}, Car Lap Data: [{lap_data_str}])"
+
+    def toJSON(self, include_header: bool=False) -> Dict[str, Any]:
+        """
+        Convert PacketLapData instance to a JSON-formatted dictionary.
+
+        Arguments:
+            - include_header - Whether the header dump must be included in the JSON
+
+        Returns:
+        - dict: JSON-formatted dictionary representing the PacketLapData instance.
+        """
+
+        json_data = {
+            "lap-data": [lap_data.toJSON() for lap_data in self.m_lapData],
+            "lap-data-count": len(self.m_lapData),
+            "time-trial-pb-car-idx": int(self.m_timeTrialPBCarIdx),
+            "time-trial-rival-car-idx": int(self.m_timeTrialRivalCarIdx),
+        }
+        if include_header:
+            json_data["header"] = self.m_header.toJSON()
+        return json_data
+
+    def __eq__(self, other: object) -> bool:
+        """
+        Check if two PacketLapData instances are equal.
+
+        Args:
+            other (object): The object to compare with.
+
+        Returns:
+            bool: True if both instances are equal, False otherwise.
+        """
+        if not isinstance(other, PacketLapData):
+            return False
+
+        return (
+            self.m_header == other.m_header and
+            self.m_lapData == other.m_lapData and
+            self.m_timeTrialPBCarIdx == other.m_timeTrialPBCarIdx and
+            self.m_timeTrialRivalCarIdx == other.m_timeTrialRivalCarIdx
+        )
+
+    def __ne__(self, other: object) -> bool:
+        """
+        Check if two PacketLapData instances are not equal.
+
+        Args:
+            other (object): The object to compare with.
+
+        Returns:
+            bool: True if both instances are not equal, False otherwise.
+        """
+        return not self.__eq__(other)
+
+    def to_bytes(self) -> bytes:
+        """Serialize PacketLapData to bytes.
+
+        Returns:
+            bytes: The serialized bytes.
+        """
+        return (
+            self.m_header.to_bytes() +
+            b''.join(lap.to_bytes() for lap in self.m_lapData) +
+            struct.pack('<bb', self.m_timeTrialPBCarIdx, self.m_timeTrialRivalCarIdx)
+        )
+
+    @classmethod
+    def from_values(cls, header: PacketHeader, lap_data: List[LapData],
+                    time_trial_pb_car_idx: int = -1,
+                    time_trial_rival_car_idx: int = -1) -> 'PacketLapData':
+        """Create a PacketLapData object from a header and list of LapData objects.
+
+        Args:
+            header (PacketHeader): The packet header.
+            lap_data (List[LapData]): List of LapData objects for all cars.
+            time_trial_pb_car_idx (int): Personal best car index (-1 if invalid).
+            time_trial_rival_car_idx (int): Rival car index (-1 if invalid).
+
+        Returns:
+            PacketLapData: A PacketLapData object initialized with the provided values.
+        """
+        payload = (
+            b''.join(lap.to_bytes() for lap in lap_data) +
+            struct.pack('<bb', time_trial_pb_car_idx, time_trial_rival_car_idx)
+        )
+        return cls(header, payload)

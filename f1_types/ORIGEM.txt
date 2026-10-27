@@ -1,0 +1,2 @@
+3490db9e3c4fe1031d51b6749f206695c3b06687 Mon Sep 21 20:10:03 2026 +0530
+Copiado de https://github.com/ashwin-nat/pits-n-giggles (lib/f1_types), licença MIT.

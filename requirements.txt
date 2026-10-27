@@ -1,0 +1,7 @@
+# bibliotecas do Engenheiro (Python 3.12) / Engenheiro's libraries (Python 3.12)
+edge-tts
+numpy
+soundfile
+sounddevice
+vosk
+faster-whisper
