@@ -36,4 +36,9 @@ Updating: extract the new zip over the same folder; your settings and sessions a
 
 Para atualizar: extraia o zip novo por cima da mesma pasta; suas configurações e sessões continuam lá.
 
+## ☕ Support
+
+Engenheiro is free and always will be. If it makes your races better, you can buy me a coffee on
+[Ko-fi](https://ko-fi.com/yohanfv) — it really helps me keep improving it. Thank you!
+
 *Unofficial fan project, not affiliated with Formula 1, the FIA, EA or Codemasters.*""")

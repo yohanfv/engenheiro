@@ -11,6 +11,8 @@
   <a href="https://ko-fi.com/yohanfv">Support ☕</a>
 </p>
 
+<p align="center"><a href="https://ko-fi.com/yohanfv"><img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Support me on Ko-fi"></a></p>
+
 <p align="center"><img src="docs/dashboard.jpg" alt="Engenheiro live dashboard during a race"></p>
 
 Engenheiro (Portuguese for *engineer*) listens to the F1 25 telemetry and talks to you over the radio while you drive:
@@ -128,9 +130,15 @@ The code and comments are in Portuguese; the app itself is fully bilingual.
 
 ## Support the project
 
-Engenheiro is free and always will be: nothing in the app is locked or paid. If it makes your races better and you
-want to say thanks, you can leave a tip on [Ko-fi](https://ko-fi.com/yohanfv). Bug reports, ideas and a ⭐ on this
-repository help just as much.
+Engenheiro is free and always will be: nothing in the app is locked or paid. It's a one-person hobby project, made in my
+free time, and many of its features came from ideas I had while racing with it.
+
+If it makes your races better, a coffee on Ko-fi is the best way to say thanks and it really helps me keep improving
+it (new tracks, better strategy calls, more languages):
+
+<p><a href="https://ko-fi.com/yohanfv"><img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Support me on Ko-fi"></a></p>
+
+Can't donate? No problem at all: a ⭐ on this repository, a bug report or telling a friend helps a lot too.
 
 ## Credits
 

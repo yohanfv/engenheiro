@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.3
+
+- A "☕ Support" button at the top of the dashboard and a short note on the waiting screen, linking to Ko-fi.
+  Nothing changes while you drive: no pop-ups, no voice messages, nothing locked.
+
 ## 1.0.2
 
 - Support link: the About screen and the README now have a link to leave an optional tip on Ko-fi.

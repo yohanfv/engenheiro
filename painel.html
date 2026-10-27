@@ -38,6 +38,13 @@
   a.som.novo { display: inline-flex; align-items: center; padding: 6px 10px; border-radius: 6px; font-weight: 700;
     border: 1px solid var(--verde); color: var(--verde); background: var(--painel2); text-decoration: none; font-size: 13px; }
   a.som.novo[hidden] { display: none; }
+  a.som.apoiar { display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 6px; font-weight: 700; font-size: 13px;
+    background: #ff5e5b; color: #fff; text-decoration: none; border: 0; }
+  a.som.apoiar:hover { filter: brightness(1.1); }
+  a.som.apoiar[hidden] { display: none; }
+  .espera .apoio { margin-top: 22px; padding: 12px 18px; border: 1px solid var(--linha); border-radius: 10px; background: var(--painel2);
+    color: var(--suave); max-width: 520px; text-align: center; font-size: 14px; }
+  .espera .apoio a { color: #ff5e5b; font-weight: 700; text-decoration: none; white-space: nowrap; }
 
   .faixa-sc { display: none; height: 34px; align-items: center; justify-content: center; font-weight: 900;
     font-size: 20px; letter-spacing: 2px; color: #111; background: var(--amarelo); }
@@ -220,6 +227,7 @@
   <button class="som" id="btn-config" title="Voz, microfone, avisos e seu nome">⚙ Configurações</button>
   <button class="som" id="btn-som" title="Toca a voz do engenheiro neste aparelho (útil no celular com fone)">🔈 Ouvir rádio aqui</button>
   <a class="som novo" id="btn-atualizar" target="_blank" rel="noopener" hidden></a>
+  <a class="som apoiar" id="btn-apoiar" target="_blank" rel="noopener" hidden title="O Engenheiro é gratuito. Gostou? Apoie no Ko-fi">☕ Apoiar</a>
   <button class="som" id="btn-sobre" title="Sobre o Engenheiro">ⓘ</button>
   <div class="conexao" id="conexao"><i></i><span>sem dados</span></div>
 </header>
@@ -313,6 +321,8 @@
     <button class="sec" data-demo="treino">Treino</button>
   </div>
   <small>A demonstração simula uma sessão curta, com voz e rádio de verdade. Nada é gravado no histórico.</small>
+  <div class="apoio" id="apoio-espera" hidden><span>O Engenheiro é gratuito e feito por um fã. Se ele ajuda nas suas corridas,</span>
+    <a id="link-apoio-espera" target="_blank" rel="noopener">☕ apoie no Ko-fi</a></div>
 </div>
 
 <script>
@@ -350,6 +360,9 @@ const DIC = {
     "The demo simulates a short session with the real voice and radio. Nothing is saved to the history.",
   "DEMONSTRAÇÃO · dados simulados, nada é gravado": "DEMO · simulated data, nothing is saved",
   "■ Parar demonstração": "■ Stop demo", "Sobre o Engenheiro": "About Engenheiro",
+  "☕ Apoiar": "☕ Support", "O Engenheiro é gratuito. Gostou? Apoie no Ko-fi": "Engenheiro is free. Enjoying it? Support it on Ko-fi",
+  "O Engenheiro é gratuito e feito por um fã. Se ele ajuda nas suas corridas,": "Engenheiro is free and made by a fan. If it makes your races better,",
+  "☕ apoie no Ko-fi": "☕ support it on Ko-fi",
 };
 const ORIG = new WeakMap();
 function traduzirEstaticos() {
@@ -611,6 +624,12 @@ async function boasVindas(forcar) {
   desenhar();
 }
 boasVindas(false);
+fetch("/config").then(r => r.json()).then(d => {      // link de apoio (Ko-fi): no topo e na tela de espera
+  const url = d.sobre && d.sobre.doacao;
+  if (!url) return;
+  for (const id of ["btn-apoiar", "link-apoio-espera"]) $(id).href = url;
+  $("btn-apoiar").hidden = false; $("apoio-espera").hidden = false;
+}).catch(() => {});
 document.querySelectorAll("[data-demo]").forEach(b => b.onclick = async () => {
   try {
     const r = await (await fetch("/demo/iniciar?cenario=" + b.dataset.demo, {method: "POST"})).json();

@@ -11,6 +11,8 @@
   <a href="https://ko-fi.com/yohanfv">Apoiar ☕</a>
 </p>
 
+<p align="center"><a href="https://ko-fi.com/yohanfv"><img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Apoie no Ko-fi"></a></p>
+
 <p align="center"><img src="docs/dashboard.jpg" alt="Painel ao vivo do Engenheiro durante uma corrida"></p>
 
 O Engenheiro lê a telemetria do F1 25 e fala com você pelo rádio enquanto você pilota: diferenças, desgaste dos
@@ -99,9 +101,16 @@ pastas estão no [README em inglês](README.md#build-from-source).
 
 ## Apoie o projeto
 
-O Engenheiro é gratuito e vai continuar assim: nada no programa é pago ou bloqueado. Se ele melhora suas corridas e
-você quiser agradecer, pode deixar uma contribuição no [Ko-fi](https://ko-fi.com/yohanfv). Relatar problemas, mandar
-ideias e dar uma ⭐ no repositório ajudam do mesmo jeito.
+O Engenheiro é gratuito e vai continuar assim: nada no programa é pago ou bloqueado. É um projeto pessoal, feito no
+meu tempo livre, e muitos recursos nasceram de ideias que tive correndo com ele.
+
+Se ele melhora suas corridas, um café no Ko-fi é o melhor jeito de agradecer e me ajuda de verdade a continuar
+melhorando (pistas novas, estratégia mais esperta, mais idiomas):
+
+<p><a href="https://ko-fi.com/yohanfv"><img src="https://ko-fi.com/img/githubbutton_sm.svg" alt="Apoie no Ko-fi"></a></p>
+
+Não pode contribuir? Sem problema nenhum: uma ⭐ no repositório, relatar um problema ou indicar para um amigo também
+ajudam muito.
 
 ## Créditos
 
