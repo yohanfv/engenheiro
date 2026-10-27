@@ -571,9 +571,10 @@ class MapaPista:
     """Monta o desenho da pista a partir das posições dos carros (por distância na volta)."""
     PASSO = 10.0
 
-    def __init__(self, pista, comprimento):
+    def __init__(self, pista, comprimento, persistir=True):
         self.pista = pista
         self.comprimento = comprimento
+        self.persistir = persistir  # False (demonstração): não lê nem grava as marcas aprendidas no jogo de verdade
         self.n = max(10, int(comprimento / self.PASSO) + 1)
         self.acum = [[0.0, 0.0, 0] for _ in range(self.n)]
         self.completo = False
@@ -590,6 +591,8 @@ class MapaPista:
         self.arquivo = os.path.join(AQUI, "mapas", f"pista_{pista}.json")
         self.arquivo_marcas = os.path.join(AQUI, "mapas", f"marcas_{pista}.json")
         try:
+            if not persistir:
+                raise OSError
             with open(self.arquivo_marcas, encoding="utf-8") as f:
                 m = json.load(f)
             if abs((m.get("comprimento") or 0) - comprimento) < 50:
@@ -609,6 +612,27 @@ class MapaPista:
                 self.versao = 1
         except (OSError, ValueError):
             pass
+        if self._pontos and not self._marcas_no_tracado():
+            # marcas de outro traçado (ex.: gravadas pela demonstração da 1.0.0): descarta e aprende de novo
+            print(f"[MAPA] Marcas da pista {pista} fora do traçado; vou aprender de novo.")
+            self.marcas, self.extras, self.curvas_pos = {}, {}, []
+            try:
+                os.remove(self.arquivo_marcas)
+            except OSError:
+                pass
+
+    def _marcas_no_tracado(self, tolerancia=40.0):
+        """True se as marcas salvas (largada, setores, curvas, overtake) ficam em cima do desenho da pista."""
+        pts = [p for p in self._pontos if p]
+        alvos = list(self.marcas.values()) + [c[1:3] for c in self.curvas_pos]
+        alvos += list(self.extras.get("overtake") or [])
+        if self.extras.get("speed_trap"):
+            alvos.append(self.extras["speed_trap"])
+        lim = tolerancia ** 2
+        for ax, az in alvos:
+            if min((ax - px) ** 2 + (az - pz) ** 2 for px, pz in pts) > lim:
+                return False
+        return True
 
     def adicionar(self, dist, x, z):
         if dist < 0 or dist >= self.comprimento:
@@ -641,6 +665,8 @@ class MapaPista:
                     self.salvar_marcas()
 
     def salvar_marcas(self):
+        if not self.persistir:
+            return
         try:
             with open(self.arquivo_marcas, "w", encoding="utf-8") as f:
                 json.dump(dict(self.marcas, comprimento=self.comprimento, extras=self.extras,
@@ -697,6 +723,8 @@ class MapaPista:
         if cheios / self.n >= 0.97:
             self.completo = True
             self._pontos = [p for p in pts if p]
+            if not self.persistir:
+                return
             try:
                 os.makedirs(os.path.dirname(self.arquivo), exist_ok=True)
                 with open(self.arquivo, "w", encoding="utf-8") as f:
@@ -961,7 +989,7 @@ class Sessao:
         self.pausado = bool(iv(getattr(p, "m_gamePaused", 0)))
         self.comprimento_pista = iv(getattr(p, "m_trackLength", 0))
         if self.mapa is None and self.comprimento_pista > 500 and self.pista >= 0:
-            self.mapa = MapaPista(self.pista, self.comprimento_pista)
+            self.mapa = MapaPista(self.pista, self.comprimento_pista, persistir=not self.cfg.get("_demo"))
         if self.mapa is not None and not self.mapa.limites_setor:
             s2 = float(getattr(p, "m_sector2LapDistanceStart", 0) or 0)
             s3 = float(getattr(p, "m_sector3LapDistanceStart", 0) or 0)

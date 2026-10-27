@@ -19,6 +19,8 @@ import time
 import os
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+# pasta do app: no executável, os mapas ficam ao lado do .exe (não dentro do _internal)
+AQUI = os.path.dirname(sys.executable) if getattr(sys, "frozen", False) else os.path.dirname(os.path.abspath(__file__))
 
 from f1_types import (PacketHeader, F1PacketType, LapData, PacketLapData,  # noqa: E402
                       CarTelemetryData, PacketCarTelemetryData, CarStatusData, PacketCarStatusData,
@@ -137,7 +139,7 @@ class C:
 def carregar_tracado(pista):
     try:
         import json
-        with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "mapas", f"pista_{pista}.json"),
+        with open(os.path.join(AQUI, "mapas", f"pista_{pista}.json"),
                   encoding="utf-8") as f:
             return json.load(f)["pontos"]
     except (OSError, ValueError, KeyError):

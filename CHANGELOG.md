@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.1
+
+- Fixed: in the downloaded version, the demo drew the cars off the track (it could not find the track maps).
+- Fixed: the demo no longer saves corner and sector marks, so it can't mix up the map of a real session.
+  Wrong marks saved by 1.0.0 are detected and thrown away automatically.
+- Fixed: the first time the app opened, the window could show "localhost refused to connect".
+
 ## 1.0.0 - first public release
 
 - Voice race engineer for F1 25 (PS5, Xbox, PC) in English and Brazilian Portuguese.

@@ -159,13 +159,32 @@ def main():
                                               "Para fechar o engenheiro, use o botão Fechar nas Configurações do painel.",
                                               "Microsoft Edge was not found, so the dashboard opened in your browser. "
                                               "To close the engineer, use the Close button in the dashboard Settings."))
-    # espera: a janela fechar, ou o botão "Fechar o engenheiro", ou o painel parar de dar sinal de vida
+    # espera: a janela fechar, ou o botão "Fechar o engenheiro", ou o painel parar de dar sinal de vida.
+    # Na primeira vez, o Edge às vezes fecha o processo que abrimos e reabre a janela em outro (perfil novo);
+    # por isso, se o processo some logo no começo, passamos a vigiar só o sinal de vida da página.
+    janela_edge = proc is not None      # False: abriu no navegador comum (sem sinal de vida)
+    so_pelo_sinal = False               # True: o Edge trocou de processo; a janela é vigiada pelo sinal de vida
+    reaberta = False
     while motor.is_alive() and not engenheiro.PARAR.is_set():
         time.sleep(0.5)
-        if proc is not None and proc.poll() is not None:
-            break
+        agora = time.monotonic()
         vivo = getattr(eng, "ultimo_sinal_janela", 0)
-        if proc is not None and vivo and time.monotonic() - vivo > 45 and time.monotonic() - inicio > 60:
+        if proc is not None and proc.poll() is not None:
+            if agora - inicio > 20:
+                break                   # o usuário fechou a janela
+            print("[JANELA] O Edge trocou de processo ao abrir; sigo pelo sinal de vida da página.")
+            proc, so_pelo_sinal = None, True
+            continue
+        if so_pelo_sinal:
+            if vivo and agora - vivo > 15:
+                print("[JANELA] A janela foi fechada (sem sinal de vida); encerrando.")
+                break
+            if not vivo and not reaberta and agora - inicio > 25:
+                print("[JANELA] A página não deu sinal de vida; abrindo a janela de novo.")
+                reaberta = True
+                proc, so_pelo_sinal, inicio = _abrir_janela(url), False, agora
+            continue
+        if janela_edge and proc is not None and vivo and agora - vivo > 45 and agora - inicio > 60:
             print("[JANELA] A janela parou de responder; encerrando.")
             break
     engenheiro.PARAR.set()
