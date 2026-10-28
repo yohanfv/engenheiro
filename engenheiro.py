@@ -794,6 +794,15 @@ class Sessao:
         self.ers = 0.0
         self.ers_modo = 0
         self.telemetria = None
+        self.carro_det = {}             # danos detalhados (aba Carro)
+        self.graf_voltas = []           # uma linha por volta sua, para os gráficos da aba Carro
+        self.graf_temp = []             # amostras a cada segundo: [volta.fração, superfície x4, miolo x4, bateria %, acelerador %, delta s]
+        self._ult_amostra_graf = -1.0
+        self._amostra_acel = [0.0, 0]
+        self._temp_volta = [0.0, 0]     # soma e número de amostras da temperatura média dos pneus na volta
+        self.mistura = None             # mistura de combustível (0 pobre, 1 padrão, 2 rica, 3 máxima)
+        self._ers_pendente = None       # (instante, energia da volta que acabou) quando o jogo zera antes da volta fechar
+        self.ers_volta = {}             # energia recuperada/usada na volta (aba Carro)
         self.dano = {}
         self.acertos = []
         self.eventos = []
@@ -1186,6 +1195,21 @@ class Sessao:
         self.comb_sobra_voltas = float(st.m_fuelRemainingLaps)
         self.ers = float(st.m_ersStoreEnergy)
         self.ers_modo = iv(st.m_ersDeployMode)
+        self.mistura = iv(getattr(st, "m_fuelMix", 0))
+        self.comb_capacidade = float(getattr(st, "m_fuelCapacity", 0) or 0)
+        # energia da volta (aba Carro): recuperada pela MGU-K/MGU-H e usada
+        ant = self.ers_volta
+        self.ers_volta = {"colhido": float(getattr(st, "m_ersHarvestedThisLapMGUK", 0) or 0)
+                          + float(getattr(st, "m_ersHarvestedThisLapMGUH", 0) or 0),
+                          "gasto": float(getattr(st, "m_ersDeployedThisLap", 0) or 0),
+                          "limite": float(getattr(st, "m_ersHarvestedLimitPerLap", 0) or 0)}
+        if ant and (self.ers_volta["gasto"] < ant["gasto"] - 1e4 or self.ers_volta["colhido"] < ant["colhido"] - 1e4):
+            fechada = {"col": round(ant["colhido"] / 1e6, 2), "gas": round(ant["gasto"] / 1e6, 2)}
+            ult = self.graf_voltas[-1] if self.graf_voltas else None
+            if ult is not None and "col" not in ult and time.monotonic() - ult["_t"] < 8:
+                ult.update(fechada)                  # a volta já fechou: completa a linha dela
+            else:
+                self._ers_pendente = (time.monotonic(), fechada)
         # troca de pneu (novo stint)
         pneu, idade = self.eu.pneu, self.eu.idade_pneu
         if self.ultimo_pneu_jogador and (pneu != self.ultimo_pneu_jogador
@@ -1207,6 +1231,18 @@ class Sessao:
         self.dano = {"asa_dianteira": max(iv(d.m_frontLeftWingDamage), iv(d.m_frontRightWingDamage)),
                      "asa_traseira": iv(d.m_rearWingDamage), "assoalho": iv(d.m_floorDamage),
                      "difusor": iv(d.m_diffuserDamage), "lateral": iv(d.m_sidepodDamage)}
+        # detalhes para a aba Carro (cada lado da asa, pneus, freios, falhas)
+        lista4 = lambda nome: [iv(x) for x in (getattr(d, nome, None) or [0, 0, 0, 0])][:4]
+        self.carro_det = {"asa_de": iv(d.m_frontLeftWingDamage), "asa_dd": iv(d.m_frontRightWingDamage),
+                          "asa_t": iv(d.m_rearWingDamage), "assoalho": iv(d.m_floorDamage),
+                          "difusor": iv(d.m_diffuserDamage), "lateral": iv(d.m_sidepodDamage),
+                          "cambio": iv(getattr(d, "m_gearBoxDamage", 0)), "motor": iv(getattr(d, "m_engineDamage", 0)),
+                          "pneus_dano": lista4("m_tyresDamage"), "freios_dano": lista4("m_brakesDamage"),
+                          "bolhas": lista4("m_tyreBlisters"),
+                          "falha_drs": iv(getattr(d, "m_drsFault", 0)), "falha_ers": iv(getattr(d, "m_ersFault", 0)),
+                          "motor_quebrado": iv(getattr(d, "m_engineBlown", 0)) or iv(getattr(d, "m_engineSeized", 0)),
+                          "pu_max": max(iv(getattr(d, a, 0)) for a in ("m_engineICEWear", "m_engineTCWear", "m_engineESWear",
+                                                                      "m_engineMGUKWear", "m_engineCEWear", "m_engineMGUHWear"))}
         if self.acum["desg_ini"] is None:
             self.acum["desg_ini"] = max(self.eu.desgaste)
         lim = self.av["dano_asa_dianteira_percentual"]
@@ -1309,6 +1345,7 @@ class Sessao:
             a["vel_max"] = iv(t.m_speed)
             if self.eu.x is not None:
                 a["vel_max_xy"] = (self.eu.x, self.eu.z)
+        self._amostrar_graficos(t, tempo_sessao)
         superf = [iv(x) for x in t.m_surfaceType]
         a["fora_pista"] += 1 if sum(1 for x in superf if x not in (0, 1)) >= 2 else 0
         a["temp_tras"].append((iv(t.m_tyresSurfaceTemperature[0]) + iv(t.m_tyresSurfaceTemperature[1])) / 2)
@@ -1598,6 +1635,15 @@ class Sessao:
                 linha["desgaste_na_volta"] = -1
                 linha["consumo_volta_kg"] = -1
         self.voltas.append(linha)
+        g = {"v": c.volta, "t": ms, "ok": int(valida), "pit": int(teve_pit), "sc": int(bool(a["sc"])),
+             "desg": [round(x, 1) for x in c.desgaste], "ers": round(self.ers / 4e6 * 100), "comb": round(self.combustivel, 1),
+             "pos": c.posicao, "pneu": c.pneu, "idade": c.idade_pneu, "s": [c.s1, c.s2, s3], "_t": time.monotonic(),
+             "tm": round(self._temp_volta[0] / self._temp_volta[1]) if self._temp_volta[1] else None}
+        self._temp_volta = [0.0, 0]
+        if self._ers_pendente and time.monotonic() - self._ers_pendente[0] < 8:
+            g.update(self._ers_pendente[1])
+        self._ers_pendente = None
+        self.graf_voltas = [x for x in self.graf_voltas if x["v"] != c.volta] + [g]
         self._escrever("voltas", linha)
         self._precisa_resumo = True
         print(f"   Volta {c.volta:>2}: {tempo_txt(ms):>9}  S1 {tempo_txt(c.s1):>7}  S2 {tempo_txt(c.s2):>7}  "
@@ -2101,6 +2147,28 @@ class Sessao:
                          "The race report shows the corners where you can find time."))
         return " ".join(partes)
 
+    def _amostrar_graficos(self, t, tempo_sessao):
+        """Uma amostra por segundo do seu carro, para os gráficos da aba Carro."""
+        sup = [iv(x) for x in t.m_tyresSurfaceTemperature]
+        self._amostra_acel[0] += float(t.m_throttle)
+        self._amostra_acel[1] += 1
+        self._temp_volta[0] += sum(sup) / 4
+        self._temp_volta[1] += 1
+        if tempo_sessao - self._ult_amostra_graf < 1.0 and tempo_sessao >= self._ult_amostra_graf:
+            return
+        self._ult_amostra_graf = tempo_sessao
+        eu, comp, dist = self.eu, self.comprimento_pista or 0, getattr(self, "_dist", -1.0)
+        if eu.volta < 1 or comp <= 0 or dist < 0:
+            return
+        acel = self._amostra_acel[0] / max(1, self._amostra_acel[1])
+        self._amostra_acel = [0.0, 0]
+        delta = round(self.delta_ms / 1000, 3) if self.delta_ms is not None else None
+        self.graf_temp.append([round(eu.volta + min(dist / comp, 0.999), 3), sup,
+                               [iv(x) for x in t.m_tyresInnerTemperature], round(self.ers / 4e6 * 100),
+                               round(acel * 100), delta])
+        if len(self.graf_temp) > 1500:
+            del self.graf_temp[:300]
+
     def _flashback(self, volta):
         """Flashback: descarta as voltas que serão refeitas (não duplicar no resumo/relatório)."""
         # guarda o que foi descartado: se o flashback foi para o finzinho da volta e ela terminar igual,
@@ -2109,6 +2177,8 @@ class Sessao:
         self._fb_tracos = {k: self.tracos[k] for k in self.tracos if k >= volta}
         self._acum_parcial = True
         self.voltas = [v for v in self.voltas if v["volta"] < volta]
+        self.graf_voltas = [g for g in self.graf_voltas if g["v"] < volta]
+        self.graf_temp = [g for g in self.graf_temp if g[0] < volta]
         for k in [k for k in self.tracos if k >= volta]:
             self.tracos.pop(k, None)
         self.stint_desgaste_voltas = self.stint_desgaste_voltas[:max(0, volta - self.stint_inicio_volta)]
@@ -2863,13 +2933,16 @@ class Sessao:
                 "aero": self.aero_modo, "overtake": self.overtake_estado, "ot_dist": self.overtake_dist,
                 "penalidades": self.penalidades_seg, "advertencias": self.advertencias,
                 "melhor": self.melhor_ms, "melhores_setores": self.melhor_setores, "drs_ok": self.drs_permitido,
-                "rpm_max": self.rpm_max, "delta": self.delta_ms, "rejoin": self.rejoin}
+                "rpm_max": self.rpm_max, "delta": self.delta_ms, "rejoin": self.rejoin,
+                "carro_det": self.carro_det, "comb_cap": round(getattr(self, "comb_capacidade", 0) or 110, 1), "ers_volta": {k: round(v / 1e6, 2) for k, v in self.ers_volta.items()}}
         if t is not None:
             eu_d.update({"vel": iv(t.m_speed), "marcha": iv(t.m_gear), "rpm": iv(t.m_engineRPM),
                          "acel": round(float(t.m_throttle), 2), "freio": round(float(t.m_brake), 2),
                          "drs": iv(t.m_drs), "temp_sup": [iv(x) for x in t.m_tyresSurfaceTemperature],
                          "temp_int": [iv(x) for x in t.m_tyresInnerTemperature],
-                         "temp_freio": [iv(x) for x in t.m_brakesTemperature]})
+                         "temp_freio": [iv(x) for x in t.m_brakesTemperature],
+                         "pressao": [round(float(x), 1) for x in t.m_tyresPressure],
+                         "temp_motor": iv(getattr(t, "m_engineTemperature", 0))})
         return {
             "sessao": {"nome": self.nome_sessao, "pista": self.nome_pista, "categoria": cat,
                        "volta": eu.volta, "total": self.total_voltas, "restante": self.tempo_restante,
@@ -2877,9 +2950,26 @@ class Sessao:
                        "temp_ar": self.temp_ar, "sc": self.safety_car, "pausado": self.pausado},
             "mapa_versao": self.mapa.versao if self.mapa else 0,
             "carros": carros, "eu": eu_d, "pecas": self.pecas,
+            "graf": [{k: v for k, v in g.items() if k != "_t"} for g in self.graf_voltas],
+            "acerto": self._acerto_resumo(), "previsao": self._previsao_resumo(),
+            "box": {"ideal": self.pit_ideal, "limite": self.pit_limite, "volta_a": self.rejoin},
+            "temp_volta": round(self._temp_volta[0] / self._temp_volta[1]) if self._temp_volta[1] else None,
+            "mistura": self.mistura,
             "voltas": self.voltas[-10:],
             "melhores_sessao": self.melhores_sessao,
         }
+
+    def _acerto_resumo(self):
+        if not self.acertos:
+            return None
+        a = self.acertos[-1][1]
+        chaves = ("frontWing", "rearWing", "onThrottle", "offThrottle", "brakeBias", "brakePressure", "fuelLoad")
+        return {k: round(float(a[k]), 1) for k in chaves if k in a}
+
+    def _previsao_resumo(self):
+        """Próximas amostras da previsão do tempo desta sessão: [(minutos, clima, chuva %)]."""
+        lista = [(m, CLIMA.get(c, ""), ch) for t, m, c, ch in self.previsao if t == self.tipo]
+        return lista[:6]
 
     # ---------------- resumo ----------------
     def escrever_resumo(self):
@@ -3360,6 +3450,12 @@ class Engenheiro:
                       "will the tyres make it to the end, or when do I pit.")
         self.sessao.falar(resp, 2, None)
         return resp
+
+    def graficos(self):
+        s = self.sessao
+        if s is None:
+            return {"temp": []}
+        return {"temp": list(s.graf_temp)}
 
     def mapa(self):
         s = self.sessao

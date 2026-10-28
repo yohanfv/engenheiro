@@ -34,6 +34,10 @@ Brasil ou inglês**, sem cadastro, sem assinatura e sem IA paga.
   rádio confirma que ele ouviu. O reconhecimento de voz roda no seu PC.
 - **Painel ao vivo:** mapa da pista no estilo oficial, com números das curvas e cores dos setores, torre de tempos,
   seu carro, temperatura e desgaste dos pneus, desgaste do motor e o rádio. Abre no celular também.
+- **Aba Carro (tela de engenheiro):** o seu carro visto de cima com as temperaturas ao vivo dos pneus (superfície e
+  miolo), freios e motor, alertas de dano, desgaste dos pneus e do motor, clima e previsão, acerto, últimos setores e
+  gráficos de temperatura dos pneus, bateria/acelerador e delta para a sua melhor volta. Tudo vai do verde-escuro
+  (perfeito) ao vermelho (crítico). O engenheiro continua falando em qualquer aba.
 - **Análise dos treinos e relatórios:** ritmo comparado com a IA, onde cada pneu esquenta demais, sugestões de
   acerto, plano de corrida e um relatório curva a curva de onde você perde tempo.
 - **Demonstração:** veja tudo funcionando sem o jogo (corrida, classificação ou treino simulados).

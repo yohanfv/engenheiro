@@ -80,6 +80,8 @@ def _criar_handler(eng):
                 self._json(eng.estado())
             elif caminho == "/mapa":
                 self._json(eng.mapa())
+            elif caminho == "/graficos":
+                self._json(eng.graficos())
             elif caminho == "/vivo":
                 import time
                 eng.ultimo_sinal_janela = time.monotonic()

@@ -33,6 +33,10 @@ back with your microphone, your controller buttons or by typing. It works with F
   confirms he heard you. Speech recognition runs on your PC.
 - **Live dashboard:** official-style track map with corner numbers and sector colours, timing tower, your car,
   tyre temperatures and wear, power unit wear, radio log. Open it on your phone too.
+- **Car tab (engineer screen):** your car seen from above with live tyre (surface and inner), brake and engine
+  temperatures, damage alerts, tyre wear, power unit wear, weather and forecast, setup, last sectors and charts of
+  tyre temperatures, battery/throttle and delta to your best lap. Everything goes from dark green (perfect) to red
+  (critical). The engineer keeps talking on any tab.
 - **Practice analysis and reports:** pace vs the AI, where each tyre overheats, setup suggestions, a race plan,
   and a corner-by-corner report of where you lose time.
 - **Demo mode:** see everything working without the game (simulated race, qualifying or practice).

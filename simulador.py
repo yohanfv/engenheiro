@@ -141,6 +141,12 @@ class C:
         self.melhor = 0
         self.parando = 0.0         # >0: perdendo velocidade até parar (abandono)
         self.asa = 0
+        self.t_sup = [88.0, 88.0, 90.0, 90.0]      # temperatura da superfície dos pneus (TE, TD, DE, DD)
+        self.t_int = [92.0, 92.0, 93.0, 93.0]      # temperatura do miolo
+        self.t_freio = [320.0, 320.0, 360.0, 360.0]
+        self.ers = 3.2e6                           # bateria (J)
+        self.ers_colhido = self.ers_gasto = 0.0    # energia da volta (J)
+        self.bolha = [0, 0, 0, 0]                  # bolhas nos pneus (%), ficam até trocar o pneu
 
 
 def carregar_tracado(pista):
@@ -162,6 +168,34 @@ def posicao_no_tracado(tracado, f):
     j = (i + 1) % len(tracado)
     t = k - int(k)
     return (tracado[i][0] * (1 - t) + tracado[j][0] * t, tracado[i][1] * (1 - t) + tracado[j][1] * t)
+
+
+def aquecer_jogador(c, curva, parado, clima, sc):
+    """Temperaturas de pneus e freios e a bateria do jogador, para a aba Carro mostrar algo vivo.
+    Devolve os valores na ordem do pacote de telemetria (freios, superfície, miolo, motor, pressões)."""
+    chuva = clima >= 3 and c.pneu not in (7, 8)
+    lento = parado or sc
+    for k in range(4):
+        dianteiro = k >= 2
+        alvo = 72 if lento else 86 + (16 if curva else -2) + (4 if dianteiro and curva else 0) + c.desg * 0.25
+        alvo += 2.5 if k in (0, 2) else 0           # lado esquerdo trabalha mais nesta pista
+        alvo -= 22 if chuva else 0
+        c.t_sup[k] += (alvo - c.t_sup[k]) * 0.18
+        alvo_int = (80 if lento else 91) + c.desg * 0.3 - (12 if chuva else 0)
+        c.t_int[k] += (alvo_int - c.t_int[k]) * 0.006
+        alvo_freio = 250 if lento else (820 if curva else 380) * (1.12 if dianteiro else 1.0)
+        c.t_freio[k] += (alvo_freio - c.t_freio[k]) * (0.2 if curva else 0.08)
+    if not parado:
+        if curva:                                    # freando e saindo das curvas: recupera
+            c.ers = min(4e6, c.ers + 20e3)
+            c.ers_colhido += 20e3
+        elif not sc:                                 # nas retas: usa
+            gasto = min(c.ers - 4e5, 7e3) if c.ers > 4e5 else 0
+            c.ers -= gasto
+            c.ers_gasto += gasto
+    pressao = [round(21.0 + (c.t_int[k] - 85) * 0.035 + (1.5 if k >= 2 else 0), 2) for k in range(4)]
+    return (*[int(x) for x in c.t_freio], *[int(x) for x in c.t_sup], *[int(x) for x in c.t_int],
+            int(104 + c.desg * 0.1), *pressao)
 
 
 def rodar():
@@ -216,17 +250,17 @@ def rodar():
                 print(f"  carro lento: {PILOTOS[rodar.lento.i]} na volta {rodar.lento_volta}", flush=True)
         if corrida and (not INCIDENTES or DEMO):
             sc = 1 if (3.2 <= eu.dist / comp <= 3.9) else 0
-        if corrida and GRID and FORMACAO and t < ESPERA_GRID - 12:
-            sc = 3                       # demonstração: o tempo no grid faz o papel da volta de apresentação
             if 3.85 <= eu.dist / comp <= 3.9 and not getattr(rodar, "sc_ev", False):
                 rodar.sc_ev = True
                 evento(t, "SCAR", struct.pack("<BB", 1, 1))
-            clima = 3 if eu.dist / comp >= 6.0 and (not INCIDENTES or DEMO) else 0
+            clima = 3 if eu.dist / comp >= 6.0 else 0
             if eu.dist / comp >= 1.5:
                 adv = 1
                 dano_asa = 30
             if eu.dist / comp >= 4.5:
                 pen = 5
+        if corrida and GRID and FORMACAO and t < ESPERA_GRID - 12:
+            sc = 3                       # demonstração: o tempo no grid faz o papel da volta de apresentação
         # ---- movimento ----
         # demonstração: os carros esperam no grid uns segundos, para o rádio de abertura terminar antes da largada
         no_grid = corrida and GRID and t < ESPERA_GRID
@@ -276,6 +310,7 @@ def rodar():
                 c.idade += 1
                 if c is eu:
                     eu.base = (74.3 if corrida else 73.9) + random.uniform(-0.3, 0.4)
+                    eu.ers_colhido = eu.ers_gasto = 0.0
                 c.desg += 3.2 if c.pneu == 16 else 2.4
                 c.pit_status = 0
                 if corrida:
@@ -290,6 +325,7 @@ def rodar():
                         c.pneu = 7 if c.volta >= 7 else 18
                         c.idade = 0
                         c.desg = 0.0
+                        c.bolha = [0, 0, 0, 0]
                         c.dist -= comp * 0.25
                     if c.volta > total_voltas:
                         c.resultado = 3
@@ -352,10 +388,13 @@ def rodar():
             vel = 0 if no_grid else (120 if curva else 270)
             if c.parando:
                 vel = max(0, int(270 - (t - c.parando) * 60))
+            if c is eu and corrida:
+                temps = aquecer_jogador(eu, curva, no_grid, clima, sc)
+            else:
+                temps = (500, 500, 600, 600, 95, 95, 92, 92, 100, 100, 98, 98, 105, 21.5, 21.5, 24.0, 24.0)
             tels.append(CarTelemetryData.from_values(
                 vel, 0.4 if curva else 1.0, 0.3 if curva else 0.0, 0.6 if curva else 0.0, 0, 3 if curva else 7,
-                11000, False, 50, 0, 500, 500, 600, 600, 95, 95, 92, 92, 100, 100, 98, 98, 105,
-                21.5, 21.5, 24.0, 24.0, 0, 0, 0, 0, packet_format=FORMATO))
+                11000, False, 50, 0, *temps, 0, 0, 0, 0, packet_format=FORMATO))
         movs = []
         for c in carros:
             f = (max(c.dist, 0) % comp) / comp
@@ -371,13 +410,25 @@ def rodar():
         if passo % 5 == 0:
             sts = [CarStatusData.from_values(V(2), True, V(1), 56, False, 30.0 - c.dist / comp * 3.6, 110.0, 0.4,
                                              13000, 4000, 8, 0, 0, V(17), V(c.pneu), c.idade, V(0), 500000.0,
-                                             120000.0, 3.0e6, V(1), 0.0, 0.0, 0.0, 0, packet_format=FORMATO)
+                                             120000.0, c.ers if c is eu else 3.0e6, V(1),
+                                             c.ers_colhido if c is eu else 0.0, 0.0, c.ers_gasto if c is eu else 0.0,
+                                             0, packet_format=FORMATO)
                    for c in carros]
             enviar(PacketCarStatusData.from_values(cabecalho(F1PacketType.CAR_STATUS, t), completar(sts, sts[-1])))
-            dns = [CarDamageData.from_values(FORMATO, [c.desg * 1.05, c.desg * 1.1, c.desg * 0.8, c.desg * 0.82],
-                                             [0] * 4, [0] * 4, [0] * 4, dano_asa if c is eu else c.asa, 0, 0, 0, 0, 0,
-                                             False, False, 60, 0, 0, 67, 14, 52, 30, min(100, 67 + c.volta),
-                                             False, False) for c in carros]
+            def dano_carro(c):
+                desg = [c.desg * 1.05, c.desg * 1.1, c.desg * 0.8, c.desg * 0.82]
+                if c is not eu:
+                    return CarDamageData.from_values(FORMATO, desg, [0] * 4, [0] * 4, [0] * 4, c.asa, 0, 0, 0, 0, 0,
+                                                     False, False, 60, 0, 0, 67, 14, 52, 30, min(100, 67 + c.volta),
+                                                     False, False)
+                c.bolha = [max(c.bolha[k], min(40, int((c.t_sup[k] - 110) * 2))) for k in range(4)]   # superaquecimento
+                bolha = c.bolha
+                return CarDamageData.from_values(FORMATO, desg, [int(x * 0.9) for x in desg],
+                                                 [min(100, 3 + c.volta * 2 + k // 2 * 2) for k in range(4)], bolha,
+                                                 dano_asa, dano_asa // 4, 0, dano_asa // 3, 0, 0,
+                                                 False, False, 60, 0, 0, 67, 14, 52, 30, min(100, 67 + c.volta),
+                                                 False, False)
+            dns = [dano_carro(c) for c in carros]
             enviar(PacketCarDamageData.from_values(cabecalho(F1PacketType.CAR_DAMAGE, t), completar(dns, dns[-1])))
             if PacketCarTelemetry2Data is not None and FORMATO >= 2026:
                 t2 = []
