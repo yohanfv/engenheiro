@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.2.0
+
+- New "Car" tab, an engineer screen: your car seen from above with live tyre (surface and inner), brake and
+  engine temperatures and damage alerts; tyre performance (wear per tyre and per lap); engine/power wear and ERS;
+  weather and forecast; car setup; last sectors; tyre history; and charts of tyre temperatures, battery and
+  throttle, and delta to your best lap.
+- Colours go from dark green (perfect) to yellow, orange and red (critical), on both tabs.
+- The engineer keeps talking on any tab. Position now shows at the top.
+- Fixed: the demo race had stopped showing the rain at the end, your front wing damage, the penalty and the
+  end of the Safety Car.
+
 ## 1.1.1
 
 - Race start: if the game counts the formation lap as "lap 1", the engineer now ignores it. Before, he could say
