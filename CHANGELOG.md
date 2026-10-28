@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.2.1
+
+- Car tab: tyre wear (%) and pressure (PSI) next to each tyre, and the damage of each part (front wings, floor,
+  sidepods, diffuser, rear wing) plus engine and gearbox wear around the car.
+- Cold temperatures (tyres, brakes, engine) now go from green to light blue and dark blue; hot ones still go
+  from green to yellow, orange and red.
+- Tyre performance shows the compound icon (coloured circle with the letter).
+- Fixed: the app name at the top could break into two lines.
+
 ## 1.2.0
 
 - New "Car" tab, an engineer screen: your car seen from above with live tyre (surface and inner), brake and
