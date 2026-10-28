@@ -23,7 +23,7 @@
   /* ---------- topo ---------- */
   header { display: flex; align-items: center; gap: 18px; height: 52px; padding: 0 16px;
     background: linear-gradient(90deg, #15192a, #0f121b); border-bottom: 2px solid var(--destaque); }
-  .marca { font-weight: 900; letter-spacing: .5px; font-size: 18px; }
+  .marca { font-weight: 900; letter-spacing: .5px; font-size: 18px; white-space: nowrap; }
   .marca b { color: var(--destaque); }
   .chip { display: flex; flex-direction: column; line-height: 1.05; }
   .chip small { color: var(--suave); font-size: 11px; text-transform: uppercase; letter-spacing: .8px; }
@@ -241,6 +241,13 @@
   #carro-svg .motor { fill: #3a4357; stroke: #ffe1e1; stroke-width: 4; transition: fill .4s; }
   #carro-svg .guia { stroke: #a8b4d6; stroke-width: 4.5; stroke-dasharray: 3 13; stroke-linecap: round; fill: none; }
   #carro-svg text { fill: #f2f7ff; font-size: 62px; font-weight: 600; font-family: "Rajdhani", "Barlow Semi Condensed", "Titillium Web", sans-serif; }
+  #carro-svg text.r-desg { font-size: 70px; font-weight: 700; }
+  #carro-svg text.r-psi { font-size: 46px; fill: #c5d3f2; }
+  #carro-svg text.d-nome { font-size: 39px; fill: #8fa3cc; font-weight: 600; }
+  #carro-svg text.d-val { font-size: 50px; font-weight: 700; }
+  .ico-pneu { width: 20px; height: 20px; vertical-align: -5px; flex: none; }
+  .ico-pneu text { font-family: "Titillium Web", "Segoe UI", sans-serif; }
+  .tp .c { display: flex; justify-content: center; }
   #carro-svg .alerta, #carro-svg .al-guia { display: none; }
   #carro-svg .alerta.on, #carro-svg .al-guia.on { display: inline; }
   .status-carro { padding: 4px 14px 10px; display: grid; gap: 6px; font-size: 15px; }
@@ -456,43 +463,67 @@
 <rect class="cp-freio" id="c-freio-3" x="332" y="309" width="19" height="67" rx="6"/>
 <rect class="cp-freio" id="c-freio-0" x="139" y="1204" width="25" height="80" rx="6"/>
 <rect class="cp-freio" id="c-freio-1" x="329" y="1203" width="25" height="81" rx="6"/></g>
-<path class="guia" d="M264 225 L336 302"/>
-<circle id="i-sup-2" cx="238" cy="225" r="17" fill="#3a4357" stroke="#e8f0ff" stroke-width="3"/>
-<text id="t-sup-2" x="204" y="246" text-anchor="end">-</text>
+<text class="r-desg" id="t-desg-2" x="256" y="167" text-anchor="end">-</text>
+<path class="guia" d="M264 243 L336 298"/>
+<circle id="i-sup-2" cx="238" cy="243" r="17" fill="#3a4357" stroke="#e8f0ff" stroke-width="3"/>
+<text id="t-sup-2" x="204" y="264" text-anchor="end">-</text>
 <path class="guia" d="M264 343 L336 343"/>
 <circle id="i-int-2" cx="238" cy="343" r="16" fill="none" stroke="#3a4357" stroke-width="5"/>
 <text id="t-int-2" x="204" y="364" text-anchor="end">-</text>
-<path class="guia" d="M264 461 L336 384"/>
-<g id="i-fre-2"><circle cx="238" cy="461" r="20" fill="#3a4357"/><path d="M241 449 A12 12 0 1 0 241 473" fill="none" stroke="#0b1328" stroke-width="5"/><circle cx="243" cy="461" r="4" fill="#0b1328"/></g>
-<text id="t-fre-2" x="204" y="482" text-anchor="end">-</text>
-<path class="guia" d="M824 224 L752 301"/>
-<circle id="i-sup-3" cx="850" cy="224" r="17" fill="#3a4357" stroke="#e8f0ff" stroke-width="3"/>
-<text id="t-sup-3" x="884" y="246" text-anchor="start">-</text>
+<path class="guia" d="M264 443 L336 388"/>
+<g id="i-fre-2"><circle cx="238" cy="443" r="20" fill="#3a4357"/><path d="M241 431 A12 12 0 1 0 241 455" fill="none" stroke="#0b1328" stroke-width="5"/><circle cx="243" cy="443" r="4" fill="#0b1328"/></g>
+<text id="t-fre-2" x="204" y="464" text-anchor="end">-</text>
+<text class="r-psi" id="t-psi-2" x="256" y="559" text-anchor="end">-</text>
+<text class="r-desg" id="t-desg-3" x="832" y="166" text-anchor="start">-</text>
+<path class="guia" d="M824 242 L752 298"/>
+<circle id="i-sup-3" cx="850" cy="242" r="17" fill="#3a4357" stroke="#e8f0ff" stroke-width="3"/>
+<text id="t-sup-3" x="884" y="264" text-anchor="start">-</text>
 <path class="guia" d="M824 342 L752 342"/>
 <circle id="i-int-3" cx="850" cy="342" r="16" fill="none" stroke="#3a4357" stroke-width="5"/>
 <text id="t-int-3" x="884" y="364" text-anchor="start">-</text>
-<path class="guia" d="M824 460 L752 384"/>
-<g id="i-fre-3"><circle cx="850" cy="460" r="20" fill="#3a4357"/><path d="M853 448 A12 12 0 1 0 853 472" fill="none" stroke="#0b1328" stroke-width="5"/><circle cx="855" cy="460" r="4" fill="#0b1328"/></g>
-<text id="t-fre-3" x="884" y="482" text-anchor="start">-</text>
-<path class="guia" d="M267 1126 L339 1203"/>
-<circle id="i-sup-0" cx="241" cy="1126" r="17" fill="#3a4357" stroke="#e8f0ff" stroke-width="3"/>
-<text id="t-sup-0" x="207" y="1147" text-anchor="end">-</text>
+<path class="guia" d="M824 442 L752 388"/>
+<g id="i-fre-3"><circle cx="850" cy="442" r="20" fill="#3a4357"/><path d="M853 430 A12 12 0 1 0 853 454" fill="none" stroke="#0b1328" stroke-width="5"/><circle cx="855" cy="442" r="4" fill="#0b1328"/></g>
+<text id="t-fre-3" x="884" y="464" text-anchor="start">-</text>
+<text class="r-psi" id="t-psi-3" x="832" y="558" text-anchor="start">-</text>
+<text class="r-desg" id="t-desg-0" x="259" y="1068" text-anchor="end">-</text>
+<path class="guia" d="M267 1144 L339 1199"/>
+<circle id="i-sup-0" cx="241" cy="1144" r="17" fill="#3a4357" stroke="#e8f0ff" stroke-width="3"/>
+<text id="t-sup-0" x="207" y="1165" text-anchor="end">-</text>
 <path class="guia" d="M267 1244 L339 1244"/>
 <circle id="i-int-0" cx="241" cy="1244" r="16" fill="none" stroke="#3a4357" stroke-width="5"/>
 <text id="t-int-0" x="207" y="1265" text-anchor="end">-</text>
-<path class="guia" d="M267 1362 L339 1285"/>
-<g id="i-fre-0"><circle cx="241" cy="1362" r="20" fill="#3a4357"/><path d="M244 1350 A12 12 0 1 0 244 1374" fill="none" stroke="#0b1328" stroke-width="5"/><circle cx="246" cy="1362" r="4" fill="#0b1328"/></g>
-<text id="t-fre-0" x="207" y="1383" text-anchor="end">-</text>
-<path class="guia" d="M830 1126 L758 1203"/>
-<circle id="i-sup-1" cx="856" cy="1126" r="17" fill="#3a4357" stroke="#e8f0ff" stroke-width="3"/>
-<text id="t-sup-1" x="890" y="1148" text-anchor="start">-</text>
+<path class="guia" d="M267 1344 L339 1289"/>
+<g id="i-fre-0"><circle cx="241" cy="1344" r="20" fill="#3a4357"/><path d="M244 1332 A12 12 0 1 0 244 1356" fill="none" stroke="#0b1328" stroke-width="5"/><circle cx="246" cy="1344" r="4" fill="#0b1328"/></g>
+<text id="t-fre-0" x="207" y="1365" text-anchor="end">-</text>
+<text class="r-psi" id="t-psi-0" x="259" y="1460" text-anchor="end">-</text>
+<text class="r-desg" id="t-desg-1" x="838" y="1068" text-anchor="start">-</text>
+<path class="guia" d="M830 1144 L758 1200"/>
+<circle id="i-sup-1" cx="856" cy="1144" r="17" fill="#3a4357" stroke="#e8f0ff" stroke-width="3"/>
+<text id="t-sup-1" x="890" y="1166" text-anchor="start">-</text>
 <path class="guia" d="M830 1244 L758 1244"/>
 <circle id="i-int-1" cx="856" cy="1244" r="16" fill="none" stroke="#3a4357" stroke-width="5"/>
 <text id="t-int-1" x="890" y="1266" text-anchor="start">-</text>
-<path class="guia" d="M830 1362 L758 1286"/>
-<g id="i-fre-1"><circle cx="856" cy="1362" r="20" fill="#3a4357"/><path d="M859 1350 A12 12 0 1 0 859 1374" fill="none" stroke="#0b1328" stroke-width="5"/><circle cx="861" cy="1362" r="4" fill="#0b1328"/></g>
-<text id="t-fre-1" x="890" y="1384" text-anchor="start">-</text>
-<path class="guia al-guia" id="al-g-e" d="M379 770 L437 770"/><path class="guia al-guia" id="al-g-d" d="M719 770 L661 770"/><g class="alerta" id="al-e" transform="translate(329,770)"><path d="M0 -40 L40 30 L-40 30 Z" fill="none" stroke="#ff3b3b" stroke-width="7" stroke-linejoin="round"/><path d="M0 -14 L0 8 M0 18 L0 20" stroke="#ff3b3b" stroke-width="7" stroke-linecap="round"/></g><g class="alerta" id="al-d" transform="translate(769,770)"><path d="M0 -40 L40 30 L-40 30 Z" fill="none" stroke="#ff3b3b" stroke-width="7" stroke-linejoin="round"/><path d="M0 -14 L0 8 M0 18 L0 20" stroke="#ff3b3b" stroke-width="7" stroke-linecap="round"/></g><text class="mot" id="t-motor" x="549" y="792" text-anchor="middle">-</text>
+<path class="guia" d="M830 1344 L758 1290"/>
+<g id="i-fre-1"><circle cx="856" cy="1344" r="20" fill="#3a4357"/><path d="M859 1332 A12 12 0 1 0 859 1356" fill="none" stroke="#0b1328" stroke-width="5"/><circle cx="861" cy="1344" r="4" fill="#0b1328"/></g>
+<text id="t-fre-1" x="890" y="1366" text-anchor="start">-</text>
+<text class="r-psi" id="t-psi-1" x="838" y="1460" text-anchor="start">-</text>
+<text class="d-nome" x="40" y="626" text-anchor="start" data-pt="Asa diant. esq." data-en="Front wing L">Asa diant. esq.</text>
+<text class="d-val" id="d-asa-de" x="40" y="670" text-anchor="start">-</text>
+<text class="d-nome" x="40" y="722" text-anchor="start" data-pt="Assoalho" data-en="Floor">Assoalho</text>
+<text class="d-val" id="d-assoalho" x="40" y="766" text-anchor="start">-</text>
+<text class="d-nome" x="40" y="818" text-anchor="start" data-pt="Motor" data-en="Engine">Motor</text>
+<text class="d-val" id="d-motor" x="40" y="862" text-anchor="start">-</text>
+<text class="d-nome" x="40" y="914" text-anchor="start" data-pt="Câmbio" data-en="Gearbox">Câmbio</text>
+<text class="d-val" id="d-cambio" x="40" y="958" text-anchor="start">-</text>
+<text class="d-nome" x="1060" y="626" text-anchor="end" data-pt="Asa diant. dir." data-en="Front wing R">Asa diant. dir.</text>
+<text class="d-val" id="d-asa-dd" x="1060" y="670" text-anchor="end">-</text>
+<text class="d-nome" x="1060" y="722" text-anchor="end" data-pt="Laterais" data-en="Sidepods">Laterais</text>
+<text class="d-val" id="d-lateral" x="1060" y="766" text-anchor="end">-</text>
+<text class="d-nome" x="1060" y="818" text-anchor="end" data-pt="Difusor" data-en="Diffuser">Difusor</text>
+<text class="d-val" id="d-difusor" x="1060" y="862" text-anchor="end">-</text>
+<text class="d-nome" x="1060" y="914" text-anchor="end" data-pt="Asa traseira" data-en="Rear wing">Asa traseira</text>
+<text class="d-val" id="d-asa-t" x="1060" y="958" text-anchor="end">-</text>
+<path class="guia al-guia" id="al-g-e" d="M424 770 L441 770"/><path class="guia al-guia" id="al-g-d" d="M674 770 L657 770"/><g class="alerta" id="al-e" transform="translate(379,770)"><path d="M0 -40 L40 30 L-40 30 Z" fill="none" stroke="#ff3b3b" stroke-width="7" stroke-linejoin="round"/><path d="M0 -14 L0 8 M0 18 L0 20" stroke="#ff3b3b" stroke-width="7" stroke-linecap="round"/></g><g class="alerta" id="al-d" transform="translate(719,770)"><path d="M0 -40 L40 30 L-40 30 Z" fill="none" stroke="#ff3b3b" stroke-width="7" stroke-linejoin="round"/><path d="M0 -14 L0 8 M0 18 L0 20" stroke="#ff3b3b" stroke-width="7" stroke-linecap="round"/></g><text class="mot" id="t-motor" x="549" y="792" text-anchor="middle">-</text>
 </svg>
     <div class="status-carro">
       <div class="duas">
@@ -1293,10 +1324,24 @@ const GRAV = {
   pu: w => (w - 20) / 60,                              // desgaste do motor/câmbio: até 20% perfeito, 80% crítico
   sup: t => fora(t, 85, 105) / 25,                     // superfície do pneu: ideal 85-105 °C
   int: t => fora(t, 88, 108) / 20,                     // miolo do pneu: ideal 88-108 °C
-  freio: t => t < 400 ? (400 - t) / 500 : (t - 900) / 250,   // freio: ideal 400-900 °C
+  freio: t => fora(t, 400, 900) / 250,                 // freio: ideal 400-900 °C
   motor: t => fora(t, 90, 115) / 20,                   // motor: ideal 90-115 °C
 };
-const cor = (tipo, v, alfa) => (v === undefined || v === null) ? "" : corGrav(GRAV[tipo](v), alfa);
+// Temperaturas: abaixo do ideal é FRIO e vai para o azul; acima do ideal segue o degradê até o vermelho.
+const FAIXA = {sup: [85, 105, 30], int: [88, 108, 25], freio: [400, 900, 350], motor: [90, 115, 30]};   // [ideal mín., ideal máx., graus até o azul-escuro]
+const FRIO = [[0, [22, 163, 74]], [0.3, [41, 206, 255]], [1, [40, 90, 230]]];
+function corFrio(s, alfa) {
+  s = Math.max(0, Math.min(1, s));
+  const k = s <= FRIO[1][0] ? 1 : 2, [a, ca] = FRIO[k - 1], [b, cb] = FRIO[k], f = (s - a) / (b - a);
+  const c = ca.map((x, i) => Math.round(x + (cb[i] - x) * f));
+  return alfa !== undefined ? `rgba(${c.join(",")},${alfa})` : `rgb(${c.join(",")})`;
+}
+const cor = (tipo, v, alfa) => {
+  if (v === undefined || v === null) return "";
+  const fx = FAIXA[tipo];
+  if (fx && v < fx[0]) return corFrio((fx[0] - v) / fx[2], alfa);
+  return corGrav(GRAV[tipo](v), alfa);
+};
 const cache = {};
 function porHtml(id, html) { if (cache[id] !== html) { cache[id] = html; $(id).innerHTML = html; } }
 function txt(id, t, cor) { const el = $(id); if (el.textContent !== t) el.textContent = t; el.style.color = cor || ""; }
@@ -1307,6 +1352,12 @@ const COR_RODA = {2: "#3aa0ff", 3: "#39d353", 0: "#ff4d4d", 1: "#ffd23f"};
 const LEG_RODA = {2: ["Diant. esq.", "Front left"], 3: ["Diant. dir.", "Front right"], 0: ["Tras. esq.", "Rear left"], 1: ["Tras. dir.", "Rear right"]};
 const ORDEM_RODAS = [2, 3, 0, 1];
 const letraPneu = id => (PNEUS[id] || ["?"])[0];
+function iconePneu(id) {      // círculo com a cor e a letra do composto, como no jogo
+  const [l, c] = PNEUS[id] || ["?", "#8a93a8"];
+  return `<svg class="ico-pneu" viewBox="0 0 24 24" aria-label="${l}"><circle cx="12" cy="12" r="9.6" fill="#0b0d12" stroke="${c}" stroke-width="3.4"/>`
+    + `<text x="12" y="16.3" text-anchor="middle" font-size="${l.length > 1 ? 9 : 11.5}" font-weight="900" fill="${c}">${l}</text></svg>`;
+}
+const txtSvg = (id, t, preenchimento) => { const el = $(id); if (el.textContent !== t) el.textContent = t; el.style.fill = preenchimento || ""; };
 const nomePneu = id => (EN ? NOME_PNEU_EN : NOME_PNEU_PT)[id] || "";
 const seg = ms => ms > 0 ? tempo(ms) : "-";
 const sinal = (s, casas = 3) => (s > 0 ? "+" : s < 0 ? "−" : "") + Math.abs(s).toFixed(casas);
@@ -1325,7 +1376,15 @@ function carroAba(d) {
     txt("t-sup-" + k, ts !== undefined ? ts + "°C" : "-");
     txt("t-int-" + k, ti !== undefined ? ti + "°C" : "-");
     txt("t-fre-" + k, tf !== undefined ? tf + "°C" : "-");
+    const w = (e.desgaste || [])[k], pr = (e.pressao || [])[k];
+    txtSvg("t-desg-" + k, w !== undefined ? Math.round(w) + "%" : "-", w !== undefined ? cor("desg", w) : "");
+    txtSvg("t-psi-" + k, pr !== undefined ? pr.toFixed(1) + " PSI" : "-");
   }
+  document.querySelectorAll("#carro-svg .d-nome").forEach(el => { const t = EN ? el.dataset.en : el.dataset.pt; if (el.textContent !== t) el.textContent = t; });
+  const valDano = (id, v, tipo) => txtSvg("d-" + id, v !== undefined ? v + "%" : "-", v !== undefined ? cor(tipo || "dano", v) : "");
+  valDano("asa-de", det.asa_de); valDano("asa-dd", det.asa_dd); valDano("asa-t", det.asa_t); valDano("assoalho", det.assoalho);
+  valDano("lateral", det.lateral); valDano("difusor", det.difusor);
+  valDano("motor", det.pu_max, "pu"); valDano("cambio", det.cambio, "pu");
   // peças: transparentes quando inteiras; com dano, pintadas no degradê
   const parte = (id, v) => { $(id).style.fill = v > 0 ? cor("dano", v, .55) : ""; };
   parte("c-asa-de", det.asa_de); parte("c-asa-dd", det.asa_dd);
@@ -1375,7 +1434,7 @@ function carroAba(d) {
     const w = (e.desgaste || [])[k] || 0, cw = cor("desg", w);
     const taxa = (ult && ant && !ult.pit) ? ult.desg[k] - ant.desg[k] : null;
     return `<div class="tp"><span class="r">${NOME_RODA[k][EN ? 1 : 0]}</span><b>${w.toFixed(1)}%</b>`
-      + `<span class="c">(${letraPneu(e.pneu)})</span><div class="trilho"><u style="width:${Math.min(100, w)}%;background:${cw}"></u></div>`
+      + `<span class="c">${iconePneu(e.pneu)}</span><div class="trilho"><u style="width:${Math.min(100, w)}%;background:${cw}"></u></div>`
       + `<span class="tx">${taxa !== null ? "+" + taxa.toFixed(1) + T("%/v", "%/lap") : "-"}</span></div>`;
   }).join(""));
   const ultMs = ult ? ult.t : 0, melhor = e.melhor || 0;
