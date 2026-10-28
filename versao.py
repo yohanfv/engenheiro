@@ -2,7 +2,7 @@
 """Nome, versão e créditos do app (aparecem na tela "Sobre" e no pacote de versões)."""
 
 NOME = "Engenheiro"
-VERSAO = "1.1.1"
+VERSAO = "1.2.0"
 SUBTITULO = ("engenheiro de corrida por voz para o F1 25 (não oficial)",
              "a free voice race engineer for F1 25 (unofficial)")
 AUTOR = "Yohan Vieira"
